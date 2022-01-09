@@ -1,2 +1,2 @@
 # jspa
-JavaScript Persistent API
+MOST Web Framework JavaScript Persistent API
