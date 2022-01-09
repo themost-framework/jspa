@@ -1,2 +1,2 @@
-# jspa
+# @themost/jspa
 MOST Web Framework JavaScript Persistent API
