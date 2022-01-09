@@ -9,6 +9,7 @@
         "esModuleInterop": true,
         "declaration": true,
         "moduleResolution": "node",
+        "experimentalDecorators": true,
         "declarationDir": "./dist/",
         "lib": [
             "DOM",

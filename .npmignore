@@ -6,6 +6,7 @@ tsconfig.spec.json
 # build
 rollup.config.js
 tsconfig.json
+jsconfig.json
 
 # dev
 .theia
