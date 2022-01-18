@@ -1,9 +1,13 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "./tsconfig.json",
+    "extends": "../tsconfig.json",
     "compilerOptions": {
         "target": "ES2015",
         "module": "CommonJS",
         "experimentalDecorators": true
-    }
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.d.ts"
+    ]
 }
