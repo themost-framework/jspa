@@ -1,8 +1,14 @@
-import {Column, Entity, Table} from '../src/Persistence';
+import {Column, Entity, GeneratedValue,GenerationType, Id, Table} from '../src/index';
 @Entity()
 @Table()
 class Person {
-    @Column()
+    @Column({
+        nullable: false
+    })
+    @Id()
+    @GeneratedValue({
+        strategy: GenerationType.Identity
+    })
     public id?: number;
 }
 
