@@ -1,4 +1,4 @@
-import { ColumnProperty } from './Column';
+import { ColumnProperty, ColumnAnnotation } from './Column';
 
 enum GenerationType {
     Auto = 'AUTO',
@@ -11,7 +11,7 @@ declare interface GeneratedValueAnnotation {
     strategy?: string;
 }
 
-declare interface GeneratedValueProperty {
+declare interface GeneratedValueColumnAnnotation extends ColumnAnnotation {
     generatedValue?: GeneratedValueAnnotation;
 }
 
@@ -35,7 +35,7 @@ function GeneratedValue(annotation?: GeneratedValueAnnotation) {
             generatedValue: value,
             nullable: false,
             updatable: false
-        } as GeneratedValueProperty);
+        } as GeneratedValueColumnAnnotation);
         if (value.strategy === GenerationType.Identity) {
             column.insertable = false;
         }
@@ -47,6 +47,6 @@ function GeneratedValue(annotation?: GeneratedValueAnnotation) {
 export {
     GenerationType,
     GeneratedValueAnnotation,
-    GeneratedValueProperty,
+    GeneratedValueColumnAnnotation,
     GeneratedValue
 }

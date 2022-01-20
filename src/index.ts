@@ -5,3 +5,7 @@ export * from './Table';
 export * from './Column';
 export * from './Id';
 export * from './GeneratedValue';
+export * from './CascadeType';
+export * from './FetchType';
+export * from './ManyToOne';
+export * from './OneToMany';
