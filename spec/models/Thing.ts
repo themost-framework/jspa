@@ -16,6 +16,9 @@ class Thing {
     @Column()
     public description?: string;
 
+    @Column()
+    public additionalType?: string;
+
     @Column({
         nullable: false,
         updatable: false

@@ -1,15 +1,16 @@
 import {Column, Entity, GeneratedValue,GenerationType, Id, Table} from '../../src/index';
+import { Party } from './Party';
 @Entity()
 @Table()
-class Person {
+class Person extends Party {
     @Column({
         nullable: false
     })
-    @Id()
-    @GeneratedValue({
-        strategy: GenerationType.Identity
+    public givenName?: string;
+    @Column({
+        nullable: false
     })
-    public id?: number;
+    public familyName?: string;
 }
 
 export {

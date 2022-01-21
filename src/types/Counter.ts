@@ -1,12 +1,12 @@
 export class Counter extends Number {
     constructor(value?: any) {
         super(value);
-        if (Counter.isValid(value) === false) {
+        if (Counter.isCounter(this.valueOf()) === false) {
             throw new TypeError('Expected a valid counter.');
         }
     }
 
-    static isValid(value?: any): boolean {
-        return value != null && Number.isInteger(value) && value > 0;
+    static isCounter(value?: any): boolean {
+        return value != null && Number.isInteger(value);
     }
 }

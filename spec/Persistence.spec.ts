@@ -32,7 +32,7 @@ describe('Persistence', () => {
     });
 
     it('should use @Column types', () => {
-        const target: ColumnProperty = Thing as ColumnProperty;
+        const target: ColumnProperty = Person as ColumnProperty;
         expect(target.Column).toBeTruthy();
         const column = target.Column.get('id');
         expect(column).toBeTruthy();
