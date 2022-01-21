@@ -10,6 +10,7 @@
         "declaration": true,
         "moduleResolution": "node",
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "declarationDir": "./dist/",
         "lib": [
             "DOM",

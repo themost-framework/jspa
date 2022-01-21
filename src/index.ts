@@ -1,3 +1,5 @@
+export * from './ColumnType';
+export * from './types';
 export * from './EntityLoaderStrategy';
 export * from './InheritanceType';
 export * from './Entity';

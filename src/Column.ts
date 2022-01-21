@@ -1,3 +1,6 @@
+import 'reflect-metadata';
+import { ColumnType } from './ColumnType';
+
 declare interface ColumnAnnotation {
     name?: string;
     nullable?: boolean;
@@ -7,6 +10,7 @@ declare interface ColumnAnnotation {
     scale?: number;
     insertable?: boolean;
     updatable?: boolean;
+    type?: string;
 }
 
 declare interface ColumnProperty {
@@ -20,12 +24,20 @@ function Column(annotation?: ColumnAnnotation) {
             columns.Column = new Map();
         }
         const column = columns.Column.get(propertyKey);
-        columns.Column.set(propertyKey, Object.assign({
+        const value: ColumnAnnotation = Object.assign({
             name: propertyKey,
             nullable: true,
             insertable: true,
             updatable: true
-        }, column, annotation));
+        }, column, annotation);
+        if (value.type == null) {
+            // get metadata
+            const r: { name?: string; prototype?: any } = Reflect.getMetadata('design:type', target, propertyKey);
+            if (r && r.name) {
+                value.type = r.name;
+            }
+        }
+        columns.Column.set(propertyKey, value);
       };
 }
 

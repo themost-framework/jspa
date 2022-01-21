@@ -1,4 +1,4 @@
-import {Column, Entity, GeneratedValue,GenerationType, Id, Table} from '../src/index';
+import {Column, Entity, GeneratedValue,GenerationType, Id, Table} from '../../src/index';
 @Entity()
 @Table()
 class Person {

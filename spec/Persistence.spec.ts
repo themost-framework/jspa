@@ -1,5 +1,6 @@
-import { ColumnProperty, EntityAnnotation, IdProperty, TableProperty } from '../src/index';
-import { Person } from './Person';
+import { ColumnProperty, Counter, EntityAnnotation, IdProperty, TableProperty } from '../src/index';
+import { Person } from './models/Person';
+import { Thing } from './models/Thing';
 
 describe('Persistence', () => {
     it('should use @Entity', () => {
@@ -29,4 +30,14 @@ describe('Persistence', () => {
         expect(column.nullable).toBeFalse();
         expect(column.insertable).toBeFalse();
     });
+
+    it('should use @Column types', () => {
+        const target: ColumnProperty = Thing as ColumnProperty;
+        expect(target.Column).toBeTruthy();
+        const column = target.Column.get('id');
+        expect(column).toBeTruthy();
+        expect(column.name).toBe('id');
+        expect(column.type).toBe('Counter');
+    });
+
 });
