@@ -54,16 +54,14 @@ class Thing {
 
     @Column({
         nullable: false,
-        updatable: false,
-        type: 'User'
+        updatable: false
     })
-    public createdBy?: any;
+    public createdBy?: Thing;
 
     @Column({
-        nullable: false,
-        type: 'User'
+        nullable: false
     })
-    public modifiedBy?: any;
+    public modifiedBy?: Thing;
 }
 
 export {

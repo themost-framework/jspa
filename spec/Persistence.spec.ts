@@ -1,4 +1,4 @@
-import { ColumnProperty, Counter, EntityAnnotation, IdProperty, TableProperty } from '../src/index';
+import { ColumnProperty, Counter, EntityAnnotation, IdProperty, EntityTableAnnotation } from '../src/index';
 import { Person } from './models/Person';
 import { Thing } from './models/Thing';
 
@@ -10,7 +10,7 @@ describe('Persistence', () => {
     });
     it('should use @Table', () => {
         const person = new Person();
-        const annotation: TableProperty = Person as TableProperty;
+        const annotation: EntityTableAnnotation = Person as EntityTableAnnotation;
         expect(annotation.Table).toBeTruthy();
         expect(annotation.Table.name).toBe('PersonBase');
     });

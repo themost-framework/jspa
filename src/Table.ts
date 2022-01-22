@@ -21,13 +21,13 @@ declare interface TableAnnotation {
     uniqueConstraints?: { columnName:string[] }[];
 }
 
-declare interface TableProperty {
+declare interface EntityTableAnnotation {
     Table?: TableAnnotation;
 }
 
 function Table(annotation?: TableAnnotation) {
     return (target: any) => {
-        const table: TableProperty = target as TableProperty;
+        const table: EntityTableAnnotation = target as EntityTableAnnotation;
         table.Table = Object.assign({
             name: `${target.name}Base`
         }, annotation);
@@ -35,7 +35,7 @@ function Table(annotation?: TableAnnotation) {
 }
 
 export {
-    TableProperty,
+    EntityTableAnnotation,
     TableAnnotation,
     Table
 }

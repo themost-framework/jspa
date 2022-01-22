@@ -3,21 +3,22 @@ declare interface EntityAnnotation {
     version?: string;
 }
 
-declare interface EntityProperty {
+declare interface EntityTypeAnnotation {
     Entity?: EntityAnnotation;
 }
 
 function Entity(annotation?: EntityAnnotation) {
     return (target: any) => {
-        const entity = target as EntityProperty;
+        const entity = target as EntityTypeAnnotation;
         entity.Entity = Object.assign({
-            name: target.name
+            name: target.name,
+            version: '1.0.0'
         }, annotation);
     };
 }
 
 export {
     EntityAnnotation,
-    EntityProperty,
+    EntityTypeAnnotation,
     Entity
 }
