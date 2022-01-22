@@ -41,8 +41,13 @@ function Column(annotation?: ColumnAnnotation) {
       };
 }
 
+function Basic() {
+    return Column();
+}
+
 export {
     ColumnAnnotation,
     ColumnProperty,
-    Column
+    Column,
+    Basic
 }

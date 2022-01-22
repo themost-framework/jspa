@@ -13,7 +13,7 @@ declare interface ManyToOneColumnAnnotation extends ColumnAnnotation {
     manyToOne?: ManyToOneAnnotation;
 }
 
-function ManyToOne(annotation: ManyToOneAnnotation) {
+function ManyToOne(annotation?: ManyToOneAnnotation) {
     return (target: any, propertyKey: string) => {
         const columns: ColumnProperty = target.constructor as ColumnProperty;
         if (columns.Column == null) {

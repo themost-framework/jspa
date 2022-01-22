@@ -11,3 +11,4 @@ export * from './CascadeType';
 export * from './FetchType';
 export * from './ManyToOne';
 export * from './OneToMany';
+export * from './Formula';
