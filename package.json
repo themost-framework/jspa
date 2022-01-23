@@ -6,6 +6,7 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "test": "jasmine",
+    "clean": "rimraf dist",
     "build": "rimraf dist && rollup --config rollup.config.js",
     "install-peers": "add-peers"
   },

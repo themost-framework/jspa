@@ -6,6 +6,7 @@ import { DataModelSchema, DataFieldSchema } from './DataModelSchema';
 import { EntityTypeAnnotation } from './Entity';
 import { EntityTableAnnotation } from './Table';
 import { InheritanceType } from './InheritanceType';
+import { IdColumnAnnotation } from './Id';
 
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
     constructor(config: ConfigurationBase) {
@@ -88,6 +89,10 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 // set scale
                 if (Object.prototype.hasOwnProperty.call(column, 'scale')) {
                     field.scale = column.scale;
+                }
+                const idColumn = column as IdColumnAnnotation;
+                if (idColumn.id) {
+                    field.primary = true;
                 }
                 result.fields.push(field);
             }

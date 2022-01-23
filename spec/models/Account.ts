@@ -1,4 +1,4 @@
-import { Column, Entity, Table } from '@themost/jspa';
+import { AttributeOverride, Column, Entity, Table } from '@themost/jspa';
 import { Thing } from './Thing';
 
 enum AccountType {
@@ -7,6 +7,7 @@ enum AccountType {
 }
 
 @Entity()
+@AttributeOverride({ name: 'alternateName', column: { nullable: false } })
 class Account extends Thing {
     @Column({
         nullable: false

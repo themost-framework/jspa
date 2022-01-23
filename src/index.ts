@@ -14,3 +14,4 @@ export * from './ManyToOne';
 export * from './OneToMany';
 export * from './Formula';
 export * from './Inheritance';
+export * from './AttributeOverride'

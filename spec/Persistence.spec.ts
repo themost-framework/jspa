@@ -1,9 +1,11 @@
 import { ConfigurationBase } from '@themost/common';
-import { Counter, EntityAnnotation, IdProperty, EntityTableAnnotation,
+import { EntityAnnotation, IdColumnAnnotation, EntityTableAnnotation,
     EntityColumnAnnotation, EntityInheritanceAnnotation, InheritanceType, EntityLoaderStrategy, DataModelSchema } from '@themost/jspa';
+import { Account } from './models/Account';
 import { ActionStatusType } from './models/ActionStatusType';
 import { Enumeration } from './models/Enumeration';
 import { Person } from './models/Person';
+import { Thing } from './models/Thing';
 
 describe('Persistence', () => {
     it('should use @Entity', () => {
@@ -19,22 +21,21 @@ describe('Persistence', () => {
     });
 
     it('should use @Id', () => {
-        const annotation: IdProperty = Person as IdProperty;
-        expect(annotation.Id).toBeTruthy();
-        expect(annotation.Id.name).toBe('id');
-    });
-
-    it('should use @Column', () => {
-        const target: EntityColumnAnnotation = Person as EntityColumnAnnotation;
-        expect(target.Column).toBeTruthy();
-        const column = target.Column.get('id');
+        const annotation: EntityColumnAnnotation = Thing as EntityColumnAnnotation;
+        expect(annotation.Column).toBeTruthy();
+        const column = annotation.Column.get('id') as IdColumnAnnotation;
         expect(column).toBeTruthy();
-        expect(column.name).toBe('id');
-        expect(column.nullable).toBeFalse();
-        expect(column.insertable).toBeFalse();
+        expect(column.id).toBeTrue();
+        const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
+        const schema: DataModelSchema = entityLoader.getModelFromEntityClass(Thing);
+        const field = schema.fields.find((item) => {
+            return item.primary;
+        });
+        expect(field).toBeTruthy();
+        expect(field.name).toBe('id');
     });
 
-    it('should use @Column types', () => {
+    it('should use @Column.type', () => {
         const target: EntityColumnAnnotation = Person as EntityColumnAnnotation;
         expect(target.Column).toBeTruthy();
         const column = target.Column.get('id');

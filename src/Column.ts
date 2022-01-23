@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { ColumnType } from './ColumnType';
+import { EntityTypeAnnotation } from './Entity';
 
 declare interface ColumnAnnotation {
     name?: string;
@@ -11,6 +11,7 @@ declare interface ColumnAnnotation {
     insertable?: boolean;
     updatable?: boolean;
     type?: string;
+    entity?: string;
 }
 
 declare interface EntityColumnAnnotation {
@@ -35,6 +36,12 @@ function Column(annotation?: ColumnAnnotation) {
             const r: { name?: string; prototype?: any } = Reflect.getMetadata('design:type', target, propertyKey);
             if (r && r.name) {
                 value.type = r.name;
+            }
+        }
+        if (value.entity == null) {
+            const targetEntity = target.constructor as EntityTypeAnnotation;
+            if (targetEntity.Entity) {
+                value.entity = targetEntity.Entity.name;
             }
         }
         columns.Column.set(propertyKey, value);

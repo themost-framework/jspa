@@ -1,7 +1,6 @@
-import {Column, Entity, GeneratedValue,GenerationType, Id, Table} from '@themost/jspa';
+import {Column, Entity, Table} from '@themost/jspa';
 import { Party } from './Party';
 @Entity()
-@Table()
 class Person extends Party {
     @Column({
         nullable: false

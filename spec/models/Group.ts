@@ -9,11 +9,6 @@ class Group extends Account {
         insertable: false
     })
     public accountType?: number = AccountType.Group;
-
-    @Column({
-        nullable: false
-    })
-    public alternateName?: string;
 }
 
 export {
