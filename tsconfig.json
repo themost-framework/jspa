@@ -15,7 +15,12 @@
         "lib": [
             "DOM",
             "ES2017"
-        ]
+        ],
+        "paths": {
+            "@themost/jspa": [
+                "src/index"
+            ]
+        }
     },
     "include": [
         "src/**/*.ts",

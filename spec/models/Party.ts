@@ -1,4 +1,4 @@
-import {Column, Entity, GeneratedValue,GenerationType, Id, ManyToOne, Table} from '../../src/index';
+import {Column, Entity, GeneratedValue,GenerationType, Id, ManyToOne, Table} from '@themost/jspa';
 import { Thing } from './Thing';
 @Entity()
 @Table()

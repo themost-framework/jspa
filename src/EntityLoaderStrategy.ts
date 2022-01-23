@@ -1,7 +1,11 @@
 import { ConfigurationBase } from '@themost/common';
 import { SchemaLoaderStrategy } from '@themost/data';
-import { EntityTableAnnotation, EntityTypeAnnotation } from 'src';
-import { DataModelSchema } from './DataModelSchema';
+import { EntityInheritanceAnnotation } from './Inheritance';
+import { EntityColumnAnnotation } from './Column';
+import { DataModelSchema, DataFieldSchema } from './DataModelSchema';
+import { EntityTypeAnnotation } from './Entity';
+import { EntityTableAnnotation } from './Table';
+import { InheritanceType } from './InheritanceType';
 
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
     constructor(config: ConfigurationBase) {
@@ -17,7 +21,39 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
         // prepare schema
         const result: DataModelSchema = {
             name: entityType.Entity.name,
-            version: entityType.Entity.version || '1.0.0'
+            version: entityType.Entity.version || '1.0.0',
+            abstract: false,
+            hidden: false,
+            caching: 'none',
+            inherits: null,
+            implements: null,
+            fields: [],
+            constraints: [],
+            eventListeners: [],
+            privileges: [
+                {
+                    mask: 15,
+                    type: 'global'
+                },
+                {
+                    mask: 15,
+                    type: 'global',
+                    account: 'Administrators'
+                }
+            ]
+        }
+        // set inherits
+        if (entityClass.__proto__) {
+            const inheritedModel = this.getModelFromEntityClass(entityClass.__proto__);
+            if (inheritedModel != null) {
+                // validate inherited entity table
+                const entityInheritance = entityClass.__proto__ as EntityInheritanceAnnotation;
+                if (entityInheritance.Inheritance && entityInheritance.Inheritance.strategy === InheritanceType.SingleTable) {
+                    result.implements = inheritedModel.name;
+                } else {
+                    result.inherits = inheritedModel.name;
+                }
+            }
         }
         // get table annotation
         const entityTable = entityClass as EntityTableAnnotation;
@@ -33,6 +69,27 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                         fields: item.columnName
                     }
                 });
+            }
+        }
+        const entityColumns = entityClass as EntityColumnAnnotation;
+        if (entityColumns.Column) {
+            for (const column of entityColumns.Column.values()) {
+                const field: DataFieldSchema = {
+                    name: column.name,
+                    type: column.type,
+                    nullable: column.nullable,
+                    readonly: Object.prototype.hasOwnProperty.call(column, 'insertable') ? column.insertable : false,
+                    editable: Object.prototype.hasOwnProperty.call(column, 'updatable') ? column.updatable : true
+                }
+                // set size
+                if (column.length) {
+                    field.size = column.length;
+                }
+                // set scale
+                if (Object.prototype.hasOwnProperty.call(column, 'scale')) {
+                    field.scale = column.scale;
+                }
+                result.fields.push(field);
             }
         }
         return result;

@@ -13,13 +13,13 @@ declare interface ColumnAnnotation {
     type?: string;
 }
 
-declare interface ColumnProperty {
+declare interface EntityColumnAnnotation {
     Column?: Map<string, ColumnAnnotation>;
 }
 
 function Column(annotation?: ColumnAnnotation) {
     return (target: any, propertyKey: string) => {
-        const columns: ColumnProperty = target.constructor as ColumnProperty;
+        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
         if (columns.Column == null) {
             columns.Column = new Map();
         }
@@ -47,7 +47,7 @@ function Basic() {
 
 export {
     ColumnAnnotation,
-    ColumnProperty,
+    EntityColumnAnnotation,
     Column,
     Basic
 }

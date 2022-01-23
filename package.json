@@ -37,6 +37,7 @@
     "@types/reflect-metadata": "^0.1.0",
     "jasmine": "^3.10.0",
     "jasmine-spec-reporter": "^7.0.0",
+    "module-alias": "^2.2.2",
     "rimraf": "^3.0.2",
     "rollup": "^2.59.0",
     "ts-node": "^10.4.0",

@@ -1,4 +1,4 @@
-import { ColumnProperty, ColumnAnnotation } from './Column';
+import { EntityColumnAnnotation, ColumnAnnotation } from './Column';
 
 enum GenerationType {
     Auto = 'AUTO',
@@ -17,7 +17,7 @@ declare interface GeneratedValueColumnAnnotation extends ColumnAnnotation {
 
 function GeneratedValue(annotation?: GeneratedValueAnnotation) {
     return (target: any, propertyKey: string) => {
-        const columns: ColumnProperty = target.constructor as ColumnProperty;
+        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
         if (columns.Column == null) {
             columns.Column = new Map();
         }

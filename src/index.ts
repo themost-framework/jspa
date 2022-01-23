@@ -1,5 +1,6 @@
-export * from './ColumnType';
 export * from './types';
+export * from './DataModelSchema';
+export * from './ColumnType';
 export * from './EntityLoaderStrategy';
 export * from './InheritanceType';
 export * from './Entity';
@@ -12,3 +13,4 @@ export * from './FetchType';
 export * from './ManyToOne';
 export * from './OneToMany';
 export * from './Formula';
+export * from './Inheritance';

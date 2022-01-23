@@ -103,6 +103,7 @@ export interface DataFieldSchema {
      * A boolean which indicates whether this attribute defines an association between two models where child objects are always treated as a part of the parent object.
      */
     nested?: boolean;
+    scale?: number;
     mapping?: {
         associationType?: "association" | "junction";
         associationAdapter?: string;

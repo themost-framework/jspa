@@ -1,5 +1,5 @@
 import { CascadeType } from './CascadeType';
-import { ColumnAnnotation, ColumnProperty } from './Column';
+import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
 
 declare interface ManyToOneAnnotation {
@@ -15,7 +15,7 @@ declare interface ManyToOneColumnAnnotation extends ColumnAnnotation {
 
 function ManyToOne(annotation?: ManyToOneAnnotation) {
     return (target: any, propertyKey: string) => {
-        const columns: ColumnProperty = target.constructor as ColumnProperty;
+        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
         if (columns.Column == null) {
             columns.Column = new Map();
         }

@@ -1,9 +1,9 @@
-import { DataContext } from '@themost/data';
-import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula } from '../../src/index';
+import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula } from '@themost/jspa';
+import { ThingBase } from './ThingBase';
 
 @Entity()
 @Table()
-class Thing {
+class Thing implements ThingBase {
     @Id()
     @Column()
     @GeneratedValue({
@@ -54,14 +54,16 @@ class Thing {
 
     @Column({
         nullable: false,
-        updatable: false
+        updatable: false,
+        type: 'Thing'
     })
-    public createdBy?: Thing;
+    public createdBy?: ThingBase;
 
     @Column({
-        nullable: false
+        nullable: false,
+        type: 'Thing'
     })
-    public modifiedBy?: Thing;
+    public modifiedBy?: ThingBase;
 }
 
 export {
