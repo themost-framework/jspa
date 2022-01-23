@@ -8,7 +8,7 @@ export default [
             format: 'cjs',
             sourcemap: true
         },
-        external: Object.keys(pkg.dependencies),
+        external: Object.keys(pkg.dependencies).concat(Object.keys(pkg.peerDependencies)),
         plugins: [typescript()]
     },
     {
@@ -18,7 +18,7 @@ export default [
             format: 'esm',
             sourcemap: true
         },
-        external: Object.keys(pkg.dependencies),
+        external: Object.keys(pkg.dependencies).concat(Object.keys(pkg.peerDependencies)),
         plugins: [typescript()]
     }
 ];
