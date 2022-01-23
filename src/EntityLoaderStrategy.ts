@@ -14,11 +14,11 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
     }
 
     getModelFromEntityClass(entityClass: any): DataModelSchema {
-        // get entity type annotation
-        const entityType = entityClass as EntityTypeAnnotation;
-        if (entityType.Entity == null) {
+        if (Object.prototype.hasOwnProperty.call(entityClass, 'Entity') === false) {
             return null;
         }
+        // get entity type annotation
+        const entityType = entityClass as EntityTypeAnnotation;
         // prepare schema
         const result: DataModelSchema = {
             name: entityType.Entity.name,
@@ -57,44 +57,48 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
             }
         }
         // get table annotation
-        const entityTable = entityClass as EntityTableAnnotation;
-        if (entityTable.Table != null) {
-            // set source
-            result.source = entityTable.Table.name;
-            // todo: set view
-            if (Array.isArray(entityTable.Table.uniqueConstraints)) {
-                // set constraints
-                result.constraints = entityTable.Table.uniqueConstraints.map((item) => {
-                    return {
-                        type: 'unique',
-                        fields: item.columnName
-                    }
-                });
+        if (Object.prototype.hasOwnProperty.call(entityClass, 'Table') === true) {
+            const entityTable = entityClass as EntityTableAnnotation;
+            if (entityTable.Table != null) {
+                // set source
+                result.source = entityTable.Table.name;
+                // todo: set view
+                if (Array.isArray(entityTable.Table.uniqueConstraints)) {
+                    // set constraints
+                    result.constraints = entityTable.Table.uniqueConstraints.map((item) => {
+                        return {
+                            type: 'unique',
+                            fields: item.columnName
+                        }
+                    });
+                }
             }
         }
-        const entityColumns = entityClass as EntityColumnAnnotation;
-        if (entityColumns.Column) {
-            for (const column of entityColumns.Column.values()) {
-                const field: DataFieldSchema = {
-                    name: column.name,
-                    type: column.type,
-                    nullable: column.nullable,
-                    readonly: Object.prototype.hasOwnProperty.call(column, 'insertable') ? column.insertable : false,
-                    editable: Object.prototype.hasOwnProperty.call(column, 'updatable') ? column.updatable : true
+        if (Object.prototype.hasOwnProperty.call(entityClass, 'Column') === true) {
+            const entityColumns = entityClass as EntityColumnAnnotation;
+            if (entityColumns.Column) {
+                for (const column of entityColumns.Column.values()) {
+                    const field: DataFieldSchema = {
+                        name: column.name,
+                        type: column.type,
+                        nullable: column.nullable,
+                        readonly: Object.prototype.hasOwnProperty.call(column, 'insertable') ? !column.insertable : false,
+                        editable: Object.prototype.hasOwnProperty.call(column, 'updatable') ? column.updatable : true
+                    }
+                    // set size
+                    if (column.length) {
+                        field.size = column.length;
+                    }
+                    // set scale
+                    if (Object.prototype.hasOwnProperty.call(column, 'scale')) {
+                        field.scale = column.scale;
+                    }
+                    const idColumn = column as IdColumnAnnotation;
+                    if (idColumn.id) {
+                        field.primary = true;
+                    }
+                    result.fields.push(field);
                 }
-                // set size
-                if (column.length) {
-                    field.size = column.length;
-                }
-                // set scale
-                if (Object.prototype.hasOwnProperty.call(column, 'scale')) {
-                    field.scale = column.scale;
-                }
-                const idColumn = column as IdColumnAnnotation;
-                if (idColumn.id) {
-                    field.primary = true;
-                }
-                result.fields.push(field);
             }
         }
         return result;

@@ -9,8 +9,8 @@ declare interface EntityTypeAnnotation {
 
 function Entity(annotation?: EntityAnnotation) {
     return (target: any) => {
-        const entity = target as EntityTypeAnnotation;
-        entity.Entity = Object.assign({
+        const entityType = target as EntityTypeAnnotation;
+        entityType.Entity = Object.assign({
             name: target.name,
             version: '1.0.0'
         }, annotation);

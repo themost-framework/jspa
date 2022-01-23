@@ -13,13 +13,6 @@ describe('Persistence', () => {
         const annotation: EntityAnnotation = Person as EntityAnnotation;
         expect(annotation.name).toBe('Person');
     });
-    it('should use @Table', () => {
-        const person = new Person();
-        const annotation: EntityTableAnnotation = Person as EntityTableAnnotation;
-        expect(annotation.Table).toBeTruthy();
-        expect(annotation.Table.name).toBe('PersonBase');
-    });
-
     it('should use @Id', () => {
         const annotation: EntityColumnAnnotation = Thing as EntityColumnAnnotation;
         expect(annotation.Column).toBeTruthy();
@@ -35,8 +28,8 @@ describe('Persistence', () => {
         expect(field.name).toBe('id');
     });
 
-    it('should use @Column.type', () => {
-        const target: EntityColumnAnnotation = Person as EntityColumnAnnotation;
+    it('should use types', () => {
+        const target: EntityColumnAnnotation = Thing as EntityColumnAnnotation;
         expect(target.Column).toBeTruthy();
         const column = target.Column.get('id');
         expect(column).toBeTruthy();

@@ -11,8 +11,12 @@ declare interface EntityAttributeOverrideAnnotation {
 
 function AttributeOverride(annotation?: AttributeOverrideAnnotation) {
     return (target: any) => {
+        if (Object.prototype.hasOwnProperty.call(target, 'AttributeOverrides') === false) {
+            Object.assign(target, {
+                AttributeOverrides: []
+            });
+        }
         const entity = target as EntityAttributeOverrideAnnotation;
-        entity.AttributeOverrides = entity.AttributeOverrides || [];
         entity.AttributeOverrides.push(annotation);
     };
 }

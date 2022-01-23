@@ -1,8 +1,9 @@
 import { ConfigurationBase } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, DataModelSchema } from '@themost/jspa';
+import { EntityColumnAnnotation, EntityLoaderStrategy, DataModelSchema, EntityTypeAnnotation } from '@themost/jspa';
 import { Account } from './models/Account';
+import { Thing } from './models/Thing';
 
-describe('Persistence', () => {
+describe('Column', () => {
     it('should use @Column', () => {
         const target: EntityColumnAnnotation = Account as EntityColumnAnnotation;
         expect(target.Column).toBeTruthy();
@@ -12,7 +13,7 @@ describe('Persistence', () => {
         expect(column.nullable).toBeFalse();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
         const schema: DataModelSchema = entityLoader.getModelFromEntityClass(Account);
-        expect(schema.fields.length).toBe(1);
+        expect(schema).toBeTruthy();
     });
 
 });

@@ -10,10 +10,12 @@ declare interface IdColumnAnnotation extends ColumnAnnotation {
 
 function Id() {
     return (target: any, propertyKey: string) => {
-        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
-        if (columns.Column == null) {
-            columns.Column = new Map();
+        if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
+            Object.assign(target.constructor, {
+                Column: new Map()
+            });
         }
+        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
         let column = columns.Column.get(propertyKey);
         if (column == null) {
             column = {

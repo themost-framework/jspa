@@ -15,10 +15,12 @@ declare type FormulaSimpleClosure<T> = () => T;
 
 function Formula<T>(closure: FormulaClosure<T> | FormulaSimpleClosure<T>) {
     return (target: any, propertyKey: string) => {
-        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
-        if (columns.Column == null) {
-            columns.Column = new Map();
+        if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
+            Object.assign(target.constructor, {
+                Column: new Map()
+            });
         }
+        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
         // get column
         let column = columns.Column.get(propertyKey);
         if (column == null) {
