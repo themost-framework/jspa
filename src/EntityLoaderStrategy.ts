@@ -7,6 +7,9 @@ import { EntityTypeAnnotation } from './Entity';
 import { EntityTableAnnotation } from './Table';
 import { InheritanceType } from './InheritanceType';
 import { IdColumnAnnotation } from './Id';
+import { ManyToOneColumnAnnotation } from './ManyToOne';
+import { FetchType } from './FetchType';
+import { JoinTableColumnAnnotation, ManyToManyColumnAnnotation } from '.';
 
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
     constructor(config: ConfigurationBase) {
@@ -93,9 +96,41 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     if (Object.prototype.hasOwnProperty.call(column, 'scale')) {
                         field.scale = column.scale;
                     }
+                    // set primary
                     const idColumn = column as IdColumnAnnotation;
                     if (idColumn.id) {
                         field.primary = true;
+                    }
+                    // set expandable
+                    const manyToOneColumn = column as ManyToOneColumnAnnotation;
+                    if (manyToOneColumn.manyToOne && manyToOneColumn.manyToOne.fetchType === FetchType.Eager) {
+                        field.expandable = true;
+                    }
+                    const manyToManyColumn = column as ManyToManyColumnAnnotation;
+                    if (manyToManyColumn.manyToMany) {
+                        field.many = true;
+                        if (manyToManyColumn.manyToMany.fetchType === FetchType.Eager) {
+                            field.expandable = true;
+                        }
+                        const joinTableColumn = column as JoinTableColumnAnnotation;
+                        if (joinTableColumn.joinTable) {
+                            field.mapping = {
+                                associationType: 'junction',
+                                associationAdapter: joinTableColumn.joinTable.name
+                            }
+                            if (Array.isArray(joinTableColumn.joinTable.joinColumns)) {
+                                const joinColumn = joinTableColumn.joinTable.joinColumns[0];
+                                if (joinColumn) {
+                                    field.mapping.associationObjectField = joinColumn.name;
+                                }
+                            }
+                            if (Array.isArray(joinTableColumn.joinTable.inverseJoinColumns)) {
+                                const inverseJoinColumn = joinTableColumn.joinTable.inverseJoinColumns[0];
+                                if (inverseJoinColumn) {
+                                    field.mapping.associationValueField = inverseJoinColumn.name;
+                                }
+                            }
+                        }
                     }
                     result.fields.push(field);
                 }

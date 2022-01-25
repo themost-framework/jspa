@@ -1,5 +1,6 @@
-import { Column, Entity } from '@themost/jspa';
+import { Column, Entity, FetchType, ManyToMany } from '@themost/jspa';
 import { Account, AccountType } from './Account';
+import { Group } from './Group';
 
 @Entity()
 class User extends Account {
@@ -9,6 +10,13 @@ class User extends Account {
         insertable: false
     })
     public accountType?: number = AccountType.User;
+
+    @ManyToMany({
+        targetEntity: Group,
+        fetchType: FetchType.Eager,
+        mappedBy: 'members'
+    })
+    public groups?: Group[];
 }
 
 export {

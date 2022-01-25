@@ -47,7 +47,6 @@ function Column(annotation?: ColumnAnnotation) {
             }
         }
         columns.Column.set(propertyKey, value);
-        Reflect.defineMetadata('EntityColumnAnnotation', columns.Column, target.constructor);
       };
 }
 

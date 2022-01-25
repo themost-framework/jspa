@@ -15,10 +15,12 @@ declare interface ManyToOneColumnAnnotation extends ColumnAnnotation {
 
 function ManyToOne(annotation?: ManyToOneAnnotation) {
     return (target: any, propertyKey: string) => {
-        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
-        if (columns.Column == null) {
-            columns.Column = new Map();
+        if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
+            Object.assign(target.constructor, {
+                Column: new Map()
+            });
         }
+        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
         // get value
         const value = Object.assign({
             fetchType: FetchType.Eager,

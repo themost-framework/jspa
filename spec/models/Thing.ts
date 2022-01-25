@@ -1,9 +1,9 @@
-import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula } from '@themost/jspa';
-import { ThingBase } from './ThingBase';
+import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula, ManyToOne, FetchType } from '@themost/jspa';
+import { UserBase } from './UserBase';
 
 @Entity()
 @Table()
-class Thing implements ThingBase {
+class Thing {
     @Id()
     @Column()
     @GeneratedValue({
@@ -55,15 +55,21 @@ class Thing implements ThingBase {
     @Column({
         nullable: false,
         updatable: false,
-        type: 'Thing'
+        type: 'User'
     })
-    public createdBy?: ThingBase;
+    @ManyToOne({
+        fetchType: FetchType.Lazy
+    })
+    public createdBy?: UserBase;
 
     @Column({
         nullable: false,
-        type: 'Thing'
+        type: 'User'
     })
-    public modifiedBy?: ThingBase;
+    @ManyToOne({
+        fetchType: FetchType.Lazy
+    })
+    public modifiedBy?: UserBase;
 }
 
 export {
