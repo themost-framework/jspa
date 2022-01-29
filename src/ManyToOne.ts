@@ -2,11 +2,13 @@ import { CascadeType } from './CascadeType';
 import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
 
+declare type AnyConstructor<T> = new(...args: any[]) => T;
+
 declare interface ManyToOneAnnotation {
     cascadeType?: CascadeType;
     fetchType?: FetchType;
     optional?: boolean;
-    targetEntity?: any;
+    targetEntity?: string | AnyConstructor<any>;
 }
 
 declare interface ManyToOneColumnAnnotation extends ColumnAnnotation {

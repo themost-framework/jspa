@@ -1,4 +1,4 @@
-import { ColumnAnnotation } from './Column';
+import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { JoinColumnAnnotation } from './JoinColumn';
 
 declare interface JoinTableAnnotation {
@@ -8,7 +8,7 @@ declare interface JoinTableAnnotation {
     inverseForeignKey?: string;
     inverseJoinColumns?: JoinColumnAnnotation[];
     joinColumns?: JoinColumnAnnotation[];
-    name?: string;
+    name: string;
     schema?: string;
     uniqueConstraints?: { columnName:string[] }[];
 }
@@ -19,10 +19,25 @@ declare interface JoinTableColumnAnnotation extends ColumnAnnotation {
 
 function JoinTable(annotation?: JoinTableAnnotation) {
     return (target: any, propertyKey: string) => {
-        const joinTable: JoinTableColumnAnnotation = target.constructor as JoinTableColumnAnnotation;
-        const value = Object.assign({
-            name: `${target.name}Base`
-        }, annotation);
+        if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
+            Object.assign(target.constructor, {
+                Column: new Map()
+            });
+        }
+        const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
+        // get column
+        let column = columns.Column.get(propertyKey);
+        if (column == null) {
+            column = {
+                name: propertyKey
+            };
+        }
+        // set value property
+        Object.assign(column, {
+            joinTable: annotation
+        } as JoinTableColumnAnnotation);
+        // finally, set column annotation
+        columns.Column.set(propertyKey, column);
     };
 }
 

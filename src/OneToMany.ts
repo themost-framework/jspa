@@ -1,3 +1,4 @@
+import { Column } from '.';
 import { CascadeType } from './CascadeType';
 import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
@@ -7,7 +8,7 @@ declare interface OneToManyAnnotation {
     fetchType?: FetchType;
     optional?: boolean;
     targetEntity?: any;
-    mappedBy?: string;
+    mappedBy: string;
 }
 
 declare interface OneToManyColumnAnnotation extends ColumnAnnotation {
@@ -21,22 +22,22 @@ function OneToMany(annotation: OneToManyAnnotation) {
                 Column: new Map()
             });
         }
+        // get columns
         const columns: EntityColumnAnnotation = target.constructor as EntityColumnAnnotation;
-        // get value
-        const value = Object.assign({
+        // prepare annotation
+        const oneToMany = Object.assign({
             fetchType: FetchType.Lazy,
             optional: true
         } as OneToManyAnnotation, annotation);
         // get column
         let column = columns.Column.get(propertyKey);
         if (column == null) {
-            column = {
-                name: propertyKey
-            };
+            Column()(target, propertyKey);
+            column = columns.Column.get(propertyKey);
         }
         // set value property
         Object.assign(column, {
-            oneToMany: value
+            oneToMany
         } as OneToManyColumnAnnotation);
         // finally, set column annotation
         columns.Column.set(propertyKey, column);

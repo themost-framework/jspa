@@ -1,4 +1,4 @@
-import { ConfigurationBase } from '@themost/common';
+import { Args, ConfigurationBase } from '@themost/common';
 import { SchemaLoaderStrategy } from '@themost/data';
 import { EntityInheritanceAnnotation } from './Inheritance';
 import { EntityColumnAnnotation } from './Column';
@@ -9,11 +9,69 @@ import { InheritanceType } from './InheritanceType';
 import { IdColumnAnnotation } from './Id';
 import { ManyToOneColumnAnnotation } from './ManyToOne';
 import { FetchType } from './FetchType';
-import { JoinTableColumnAnnotation, ManyToManyColumnAnnotation } from '.';
+import { CascadeType, EmbeddedableEntityAnnotation, EmbeddedEntityAnnotation, JoinTable, JoinTableColumnAnnotation, ManyToManyColumnAnnotation, OneToManyAnnotation, OneToManyColumnAnnotation } from '.';
 
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
+
+    public imports: string[];
+    private _models: Map<string, any>;
+
     constructor(config: ConfigurationBase) {
         super(config);
+        const values = config.getSourceAt('settings/jspa/imports') || [];
+        Args.check(Array.isArray(values), new Error('Invalid configuration. The persistent annotation imports, defined by `settings/jspa/imports`, must be an array of modules.'));
+        this.imports = values;
+    }
+
+    getModelDefinition(name: string): any {
+        const model = this._models.get(name);
+        if (model == null) {
+            return null;
+        }
+        if (typeof model === 'function') {
+            const modelDefinition = this.getModelFromEntityClass(model);
+            this._models.set(name, modelDefinition);
+            return modelDefinition;
+        }
+        return model;
+    }
+
+    setModelDefinition(): this {
+        throw new Error('The operation is not supported by EntitySchemaLoader.');
+    }
+
+    reload() {
+        this.readSync();
+    }
+
+    readSync(): string[] {
+        if (this._models != null) {
+            return Array.from(this._models.keys());
+        }
+        const models: Map<string, any> = new Map();
+        for (const modulePath of this.imports) {
+            const module = require(modulePath);
+            Object.keys(module).forEach((member: string) => {
+                if (Object.prototype.hasOwnProperty.call(module, member)) {
+                    const exportedMember = module[member];
+                    if (typeof exportedMember === 'function') {
+                        const entityAnnotation: EntityTypeAnnotation = exportedMember as EntityTypeAnnotation;
+                        if (entityAnnotation.Entity && entityAnnotation.Entity.name) {
+                          models.set(entityAnnotation.Entity.name, exportedMember);
+                        }
+                    }
+                }
+            });
+        }
+        this._models = models;
+        return Array.from(this._models.keys());
+    }
+
+    getModels(): string[] {
+        if (this._models == null) {
+            return this.readSync();
+        }
+        return Array.from(this._models.keys());
     }
 
     getModelFromEntityClass(entityClass: any): DataModelSchema {
@@ -59,6 +117,10 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 }
             }
         }
+        const embeddedableEntity = entityClass as EmbeddedableEntityAnnotation;
+        if (embeddedableEntity.embeddedable) {
+            result.hidden = true;
+        }
         // get table annotation
         if (Object.prototype.hasOwnProperty.call(entityClass, 'Table') === true) {
             const entityTable = entityClass as EntityTableAnnotation;
@@ -101,6 +163,11 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     if (idColumn.id) {
                         field.primary = true;
                     }
+                    // set nested
+                    const embeddedColumn = column as EmbeddedEntityAnnotation;
+                    if (embeddedColumn.embedded) {
+                        field.nested = true;
+                    }
                     // set expandable
                     const manyToOneColumn = column as ManyToOneColumnAnnotation;
                     if (manyToOneColumn.manyToOne && manyToOneColumn.manyToOne.fetchType === FetchType.Eager) {
@@ -109,6 +176,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     const manyToManyColumn = column as ManyToManyColumnAnnotation;
                     if (manyToManyColumn.manyToMany) {
                         field.many = true;
+                        field.nullable = true;
                         if (manyToManyColumn.manyToMany.fetchType === FetchType.Eager) {
                             field.expandable = true;
                         }
@@ -117,6 +185,9 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                             field.mapping = {
                                 associationType: 'junction',
                                 associationAdapter: joinTableColumn.joinTable.name
+                            }
+                            if (manyToManyColumn.manyToMany.mappedBy === null) {
+                                // todo: add parentModel, parentField, childModel, childField
                             }
                             if (Array.isArray(joinTableColumn.joinTable.joinColumns)) {
                                 const joinColumn = joinTableColumn.joinTable.joinColumns[0];
@@ -132,10 +203,32 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                             }
                         }
                     }
+                    const oneToManyColumn = column as OneToManyColumnAnnotation;
+                    if (oneToManyColumn.oneToMany) {
+                        field.many = true;
+                        field.nullable = true;
+                        if (oneToManyColumn.oneToMany.fetchType === FetchType.Eager) {
+                            field.expandable = true;
+                        }
+                        // set association type
+                        field.mapping = {
+                            associationType: 'association'
+                        }
+                        // set cascade
+                        if (oneToManyColumn.oneToMany.cascadeType != null) {
+                            // tslint:disable-next-line: no-bitwise
+                            if ((oneToManyColumn.oneToMany.cascadeType & CascadeType.Remove) === CascadeType.Remove) {
+                                field.mapping.cascade = 'delete';
+                            }
+                        }
+                    }
                     result.fields.push(field);
                 }
             }
         }
+        Object.assign(result, {
+            DataObjectClass: entityClass
+        });
         return result;
     }
 

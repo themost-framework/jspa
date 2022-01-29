@@ -56,26 +56,6 @@ function ManyToMany(annotation?: ManyToManyAnnotation) {
         if (targetEntity == null) {
             throw new EntityNotFoundException();
         }
-        // generate join table if it's empty
-        if (Object.prototype.hasOwnProperty.call(column, 'joinTable') === false) {
-            Object.assign(column, {
-                joinTable: {
-                    name: `${target.constructor.name}${plural(targetEntity)}`,
-                    joinColumns: [
-                        {
-                            // e.g. User -> user or ActionStatusType -> actionStatusType
-                            name: camelCase(target.constructor.name)
-                        } as JoinColumnAnnotation
-                    ],
-                    inverseJoinColumns: [
-                        {
-                            // e.g. User -> user or ActionStatusType -> actionStatusType
-                            name: camelCase(targetEntity)
-                        } as JoinColumnAnnotation
-                    ]
-                } as JoinTableAnnotation
-            });
-        }
         // set value property
         Object.assign(column, {
             manyToMany: value,
