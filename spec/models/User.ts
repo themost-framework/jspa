@@ -1,8 +1,11 @@
-import { CascadeType, Column, Entity, FetchType, ManyToMany } from '@themost/jspa';
+import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostLoad } from '@themost/jspa';
 import { Account, AccountType } from './Account';
 import { Group } from './Group';
+import { OnUserRemoveListener } from './OnUserRemoveListener';
+import { OnUserUpdateListener } from './OnUserUpdateListener';
 
 @Entity()
+@EntityListeners(OnUserUpdateListener, OnUserRemoveListener)
 class User extends Account {
     @Column({
         nullable: false,
@@ -18,6 +21,12 @@ class User extends Account {
         mappedBy: 'members'
     })
     public groups?: Group[];
+
+    @PostLoad()
+    onPostLoad() {
+        //
+    }
+
 }
 
 export {
