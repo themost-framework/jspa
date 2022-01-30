@@ -1,6 +1,5 @@
-import { Column } from '.';
 import { CascadeType } from './CascadeType';
-import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
+import { Column, ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
 
 declare interface OneToManyAnnotation {

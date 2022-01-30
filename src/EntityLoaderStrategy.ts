@@ -9,7 +9,11 @@ import { InheritanceType } from './InheritanceType';
 import { IdColumnAnnotation } from './Id';
 import { ManyToOneColumnAnnotation } from './ManyToOne';
 import { FetchType } from './FetchType';
-import { CascadeType, EmbeddedableEntityAnnotation, EmbeddedEntityAnnotation, JoinTable, JoinTableColumnAnnotation, ManyToManyColumnAnnotation, OneToManyAnnotation, OneToManyColumnAnnotation } from '.';
+import { EmbeddedableEntityAnnotation, EmbeddedEntityAnnotation } from './Embedded';
+import { ManyToManyColumnAnnotation } from './ManyToMany';
+import { JoinTableColumnAnnotation } from './JoinTable';
+import { OneToManyColumnAnnotation } from './OneToMany';
+import { CascadeType } from './CascadeType';
 
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
 

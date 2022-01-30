@@ -1,5 +1,5 @@
-import { Entity } from '.';
 import { ColumnAnnotation, Column, EntityColumnAnnotation } from './Column';
+import { Entity } from './Entity';
 
 declare interface EmbeddedEntityAnnotation extends ColumnAnnotation {
     embedded?: boolean;
