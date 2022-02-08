@@ -1,8 +1,7 @@
-import { Args, ConfigurationBase } from '@themost/common';
-import { SchemaLoaderStrategy } from '@themost/data';
+import { Args, ConfigurationBase, DataModelBase, DataModelProperties, SequentialEventEmitter } from '@themost/common';
+import { DataEventArgs, SchemaLoaderStrategy } from '@themost/data';
 import { EntityInheritanceAnnotation } from './Inheritance';
 import { EntityColumnAnnotation } from './Column';
-import { DataModelSchema, DataFieldSchema } from './DataModelSchema';
 import { EntityTypeAnnotation } from './Entity';
 import { EntityTableAnnotation } from './Table';
 import { InheritanceType } from './InheritanceType';
@@ -14,6 +13,15 @@ import { ManyToManyColumnAnnotation } from './ManyToMany';
 import { JoinTableColumnAnnotation } from './JoinTable';
 import { OneToManyColumnAnnotation } from './OneToMany';
 import { CascadeType } from './CascadeType';
+import { CallbackMethodCollectionAnnotation, EntityListenerCollectionAnnotation } from './EntityListener';
+import { PreLoad } from './PreLoad';
+import { PrePersist } from './PrePersist';
+import { PostPersist } from './PostPersist';
+import { PreUpdate } from './PreUpdate';
+import { PostUpdate } from './PostUpdate';
+import { PreRemove } from './PreRemove';
+import { PostRemove } from './PostRemove';
+import { DataFieldBase } from '@themost/common';
 
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
 
@@ -40,7 +48,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
         return model;
     }
 
-    setModelDefinition(): this {
+    setModelDefinition(): SchemaLoaderStrategy {
         throw new Error('The operation is not supported by EntitySchemaLoader.');
     }
 
@@ -78,14 +86,14 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
         return Array.from(this._models.keys());
     }
 
-    getModelFromEntityClass(entityClass: any): DataModelSchema {
+    getModelFromEntityClass(entityClass: any): DataModelProperties {
         if (Object.prototype.hasOwnProperty.call(entityClass, 'Entity') === false) {
             return null;
         }
         // get entity type annotation
         const entityType = entityClass as EntityTypeAnnotation;
         // prepare schema
-        const result: DataModelSchema = {
+        const result: DataModelProperties = {
             name: entityType.Entity.name,
             version: entityType.Entity.version || '1.0.0',
             abstract: false,
@@ -147,7 +155,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
             const entityColumns = entityClass as EntityColumnAnnotation;
             if (entityColumns.Column) {
                 for (const column of entityColumns.Column.values()) {
-                    const field: DataFieldSchema = {
+                    const field: DataFieldBase = {
                         name: column.name,
                         type: column.type,
                         nullable: column.nullable,
@@ -230,10 +238,158 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 }
             }
         }
+        const eventEmitter = this.inspectCallbacks(entityClass);
+        // set event emitter
+        Object.assign(result, {
+            eventEmitter
+        });
+        // set class
         Object.assign(result, {
             DataObjectClass: entityClass
         });
         return result;
+    }
+
+    protected inspectCallbacks(entityClass: any): SequentialEventEmitter {
+        const eventEmitter = new SequentialEventEmitter();
+        const entityListenerCollection = entityClass as EntityListenerCollectionAnnotation;
+        if (Array.isArray(entityListenerCollection.EntityListeners)) {
+            entityListenerCollection.EntityListeners.forEach((entityListener) => {
+                const entityCallbackCollection1 = entityListener as CallbackMethodCollectionAnnotation;
+                if (Array.isArray(entityCallbackCollection1.CallbackMethods)) {
+                    entityCallbackCollection1.CallbackMethods.forEach((callbackMethod) => {
+                        if (callbackMethod.type === PrePersist) {
+                            eventEmitter.on('before.save', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                                if (event.state !== 1) {
+                                    return callback();
+                                }
+                                return callbackMethod.callback(event.target).then(() => {
+                                    return callback();
+                                }).catch((err: Error | any) => {
+                                    return callback(err);
+                                });
+                            });
+                        } else if (callbackMethod.type === PostPersist) {
+                            eventEmitter.on('after.save', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                                if (event.state !== 1) {
+                                    return callback();
+                                }
+                                return callbackMethod.callback(event.target).then(() => {
+                                    return callback();
+                                }).catch((err: Error | any) => {
+                                    return callback(err);
+                                });
+                            });
+                        } else if (callbackMethod.type === PreUpdate) {
+                            eventEmitter.on('before.save', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                                if (event.state !== 2) {
+                                    return callback();
+                                }
+                                return callbackMethod.callback(event.target).then(() => {
+                                    return callback();
+                                }).catch((err: Error | any) => {
+                                    return callback(err);
+                                });
+                            });
+                        } else if (callbackMethod.type === PostUpdate) {
+                            eventEmitter.on('after.save', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                                if (event.state !== 2) {
+                                    return callback();
+                                }
+                                return callbackMethod.callback(event.target).then(() => {
+                                    return callback();
+                                }).catch((err: Error | any) => {
+                                    return callback(err);
+                                });
+                            });
+                        } else if (callbackMethod.type === PreRemove) {
+                            eventEmitter.on('before.remove', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                                return callbackMethod.callback(event.target).then(() => {
+                                    return callback();
+                                }).catch((err: Error | any) => {
+                                    return callback(err);
+                                });
+                            });
+                        } else if (callbackMethod.type === PostRemove) {
+                            eventEmitter.on('after.remove', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                                return callbackMethod.callback(event.target).then(() => {
+                                    return callback();
+                                }).catch((err: Error | any) => {
+                                    return callback(err);
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        const entityCallbackCollection = entityClass as CallbackMethodCollectionAnnotation;
+        if (Array.isArray(entityCallbackCollection.CallbackMethods)) {
+            entityCallbackCollection.CallbackMethods.forEach((callbackMethod) => {
+                if (callbackMethod.type === PrePersist) {
+                    eventEmitter.on('before.save', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                        if (event.state !== 1) {
+                            return callback();
+                        }
+                        return callbackMethod.callback.bind(event.target)().then(() => {
+                            return callback();
+                        }).catch((err: Error | any) => {
+                            return callback(err);
+                        });
+                    });
+                } else if (callbackMethod.type === PostPersist) {
+                    eventEmitter.on('after.save', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                        if (event.state !== 1) {
+                            return callback();
+                        }
+                        return callbackMethod.callback.bind(event.target)().then(() => {
+                            return callback();
+                        }).catch((err: Error | any) => {
+                            return callback(err);
+                        });
+                    });
+                } else if (callbackMethod.type === PreUpdate) {
+                    eventEmitter.on('before.save', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                        if (event.state !== 2) {
+                            return callback();
+                        }
+                        return callbackMethod.callback.bind(event.target)().then(() => {
+                            return callback();
+                        }).catch((err: Error | any) => {
+                            return callback(err);
+                        });
+                    });
+                } else if (callbackMethod.type === PostUpdate) {
+                    eventEmitter.on('after.save', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                        if (event.state !== 2) {
+                            return callback();
+                        }
+                        return callbackMethod.callback.bind(event.target)().then(() => {
+                            return callback();
+                        }).catch((err: Error | any) => {
+                            return callback(err);
+                        });
+                    });
+                } else if (callbackMethod.type === PreRemove) {
+                    eventEmitter.on('before.remove', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                        return callbackMethod.callback.bind(event.target)().then(() => {
+                            return callback();
+                        }).catch((err: Error | any) => {
+                            return callback(err);
+                        });
+                    });
+                } else if (callbackMethod.type === PostRemove) {
+                    eventEmitter.on('after.remove', (event: DataEventArgs, callback: (err?: Error) => void): void => {
+                        return callbackMethod.callback.bind(event.target)().then(() => {
+                            return callback();
+                        }).catch((err: Error | any) => {
+                            return callback(err);
+                        });
+                    });
+                }
+            });
+        }
+        return eventEmitter;
     }
 
 }

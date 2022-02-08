@@ -16,6 +16,15 @@ function SetCallbackMethod(method: CallbackMethod) {
     };
 }
 
+export interface DataModelEvent {
+    type: string;
+    event: (event: any, callback: (err?: Error) => void) => void;
+}
+
+export interface DataModelEventConverter {
+    toEvent(callbackMethod: CallbackMethod): DataModelEvent;
+}
+
 export {
     SetCallbackMethod
 }

@@ -1,16 +1,16 @@
 import { DataModelEvent, DataModelEventConverter, SetCallbackMethod } from './CallbackMethod';
 import { CallbackMethodAnnotation } from './EntityListener';
 
-function PostRemove() {
-    return SetCallbackMethod(PostRemove);
+function PreInit() {
+    return SetCallbackMethod(PreInit);
 }
 
-Object.assign(PostRemove, {
+Object.assign(PreInit, {
     toEvent: (callbackMethod: CallbackMethodAnnotation): DataModelEvent => {
         return {
-            type: 'after.remove',
+            type: 'before.upgrade',
             event: (event: any, callback: (err?: Error) => void): void => {
-                return callbackMethod.callback.bind(event.target)().then(() => {
+                return callbackMethod.callback(event).then(() => {
                     return callback();
                 }).catch((err: Error | any) => {
                     return callback(err);
@@ -21,5 +21,5 @@ Object.assign(PostRemove, {
 } as DataModelEventConverter);
 
 export {
-    PostRemove
+    PreInit
 }

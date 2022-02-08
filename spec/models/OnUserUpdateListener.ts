@@ -2,11 +2,11 @@ import { PostLoad, PostUpdate, PreUpdate } from '@themost/jspa';
 
 export class OnUserUpdateListener {
     @PreUpdate()
-    onPreUpdate(entity: any) {
+    async onPreUpdate(entity: any) {
         //
     }
     @PostUpdate()
-    onPostUpdate(entity: any) {
+    async onPostUpdate(entity: any) {
         //
     }
 }

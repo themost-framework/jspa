@@ -1,4 +1,5 @@
-import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostLoad } from '@themost/jspa';
+import { DataContext } from '@themost/data';
+import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostInit, PostLoad, PreInit } from '@themost/jspa';
 import { Account, AccountType } from './Account';
 import { Group } from './Group';
 import { OnUserRemoveListener } from './OnUserRemoveListener';
@@ -25,6 +26,16 @@ class User extends Account {
     @PostLoad()
     onPostLoad() {
         //
+    }
+
+    @PreInit()
+    static onPreInit(eventArgs: any) {
+        // do nothing
+    }
+
+    @PostInit()
+    static onPostInit(eventArgs: any) {
+        // do nothing
     }
 
 }
