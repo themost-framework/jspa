@@ -3,6 +3,8 @@ declare interface EntityAnnotation {
     version?: string;
 }
 
+declare type EntityConstructor<T> = new(...args: any[]) => T;
+
 declare interface EntityTypeAnnotation {
     Entity?: EntityAnnotation;
 }
@@ -18,6 +20,7 @@ function Entity(annotation?: EntityAnnotation) {
 }
 
 export {
+    EntityConstructor,
     EntityAnnotation,
     EntityTypeAnnotation,
     Entity

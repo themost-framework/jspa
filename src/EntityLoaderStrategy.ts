@@ -238,11 +238,14 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 }
             }
         }
-        const eventEmitter = this.inspectCallbacks(entityClass);
-        // set event emitter
-        Object.assign(result, {
-            eventEmitter
-        });
+        result.eventListeners = [
+            {
+                type: '@themost/data/previous-state-listener'
+            },
+            {
+                type: '@themost/jspa/listener'
+            }
+        ]
         // set class
         Object.assign(result, {
             DataObjectClass: entityClass

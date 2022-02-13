@@ -1,25 +1,18 @@
-import { DataModelEvent, DataModelEventConverter, SetCallbackMethod } from './CallbackMethod';
-import { CallbackMethodAnnotation } from './EntityListener';
+import { DataContextBase, DataModelBase } from '@themost/common';
+import { SetCallbackMethod } from './CallbackMethod';
+import { EntityConstructor } from './Entity';
 
 function PostInit() {
     return SetCallbackMethod(PostInit);
 }
 
-Object.assign(PostInit, {
-    toEvent: (callbackMethod: CallbackMethodAnnotation): DataModelEvent => {
-        return {
-            type: 'after.upgrade',
-            event: (event: any, callback: (err?: Error) => void): void => {
-                return callbackMethod.callback(event).then(() => {
-                    return callback();
-                }).catch((err: Error | any) => {
-                    return callback(err);
-                });
-            }
-        }
-    }
-} as DataModelEventConverter);
+declare interface PostInitEvent {
+    context?: DataContextBase,
+    entityClass?: EntityConstructor<any>;
+    model?: DataModelBase;
+}
 
 export {
+    PostInitEvent,
     PostInit
 }

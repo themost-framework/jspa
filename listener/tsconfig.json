@@ -1,5 +1,4 @@
 {
-    "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "baseUrl": ".",
         "outDir": "./dist/",
@@ -18,10 +17,7 @@
         ],
         "paths": {
             "@themost/jspa": [
-                "src/index"
-            ],
-            "@themost/jspa/listener": [
-                "listener/src/index"
+                "../src/index"
             ]
         }
     },
@@ -30,7 +26,6 @@
         "src/**/*.d.ts"
     ],
     "exclude": [
-        "node_modules",
-        "src/**/*.spec.ts"
+        "node_modules"
     ]
 }

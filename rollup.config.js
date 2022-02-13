@@ -19,6 +19,29 @@ export default [
             sourcemap: true
         },
         external: Object.keys(pkg.dependencies).concat(Object.keys(pkg.peerDependencies)),
-        plugins: [typescript()]
+        plugins: [typescript(
+        )]
+    },
+    {
+        input: 'listener/src/index.ts',
+        output: {
+            dir: 'listener/dist',
+            format: 'cjs',
+            sourcemap: true
+        },
+        plugins: [typescript({
+            tsconfig: './listener/tsconfig.json'
+        })]
+    },
+    {
+        input: 'listener/src/index.ts',
+        output: {
+            file: 'listener/dist/index.esm.js',
+            format: 'esm',
+            sourcemap: true
+        },
+        plugins: [typescript({
+            tsconfig: './listener/tsconfig.json'
+        })]
     }
 ];

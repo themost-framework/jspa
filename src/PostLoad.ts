@@ -1,25 +1,20 @@
+import { DataContextBase } from '@themost/common';
 import { DataModelEvent, DataModelEventConverter, SetCallbackMethod } from './CallbackMethod';
+import { EntityConstructor } from './Entity';
 import { CallbackMethodAnnotation } from './EntityListener';
 
 function PostLoad() {
     return SetCallbackMethod(PostLoad);
 }
 
-Object.assign(PostLoad, {
-    toEvent: (callbackMethod: CallbackMethodAnnotation): DataModelEvent => {
-        return {
-            type: 'after.execute',
-            event: (event: any, callback: (err?: Error) => void): void => {
-                return callbackMethod.callback(event.target).then(() => {
-                    return callback();
-                }).catch((err: Error | any) => {
-                    return callback(err);
-                });
-            }
-        }
-    }
-} as DataModelEventConverter);
+declare interface PostLoadEvent {
+    context?: DataContextBase,
+    entityClass?: EntityConstructor<any>;
+    emitter?: any;
+    query?: any;
+}
 
 export {
+    PostLoadEvent,
     PostLoad
 }

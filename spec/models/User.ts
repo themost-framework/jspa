@@ -1,12 +1,14 @@
+import { DataContextBase } from '@themost/common';
 import { DataContext } from '@themost/data';
 import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostInit, PostLoad, PreInit } from '@themost/jspa';
 import { Account, AccountType } from './Account';
 import { Group } from './Group';
+import { OnUserInitListener } from './OnUserInitListener';
 import { OnUserRemoveListener } from './OnUserRemoveListener';
 import { OnUserUpdateListener } from './OnUserUpdateListener';
 
 @Entity()
-@EntityListeners(OnUserUpdateListener, OnUserRemoveListener)
+@EntityListeners(OnUserUpdateListener, OnUserRemoveListener, OnUserInitListener)
 class User extends Account {
     @Column({
         nullable: false,
@@ -29,12 +31,12 @@ class User extends Account {
     }
 
     @PreInit()
-    static onPreInit(eventArgs: any) {
+    static onPreInit(context: DataContextBase) {
         // do nothing
     }
 
     @PostInit()
-    static onPostInit(eventArgs: any) {
+    static onPostInit(context: DataContextBase) {
         // do nothing
     }
 
