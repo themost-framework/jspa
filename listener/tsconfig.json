@@ -6,11 +6,10 @@
         "module": "ESNext",
         "sourceMap": true,
         "esModuleInterop": true,
-        "declaration": true,
+        "declaration": false,
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declarationDir": "./dist/",
         "lib": [
             "DOM",
             "ES2017"

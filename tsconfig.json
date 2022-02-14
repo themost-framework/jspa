@@ -18,10 +18,10 @@
         ],
         "paths": {
             "@themost/jspa": [
-                "src/index"
+                "./src/index"
             ],
             "@themost/jspa/listener": [
-                "listener/src/index"
+                "./listener/src/index"
             ]
         }
     },

@@ -1,5 +1,7 @@
 import typescript from '@rollup/plugin-typescript';
 import * as pkg from './package.json';
+import path from 'path';
+
 export default [
     {
         input: 'src/index.ts',
@@ -23,15 +25,19 @@ export default [
         )]
     },
     {
-        input: 'listener/src/index.ts',
+        input: path.resolve(process.cwd(), 'listener/src/index.ts'),
         output: {
             dir: 'listener/dist',
             format: 'cjs',
             sourcemap: true
         },
-        plugins: [typescript({
-            tsconfig: './listener/tsconfig.json'
-        })]
+        external: [ '@themost/jspa', '@themost/common' ],
+        plugins: [
+            typescript({
+                tsconfig: path.resolve(process.cwd(), 'listener/tsconfig.lib.json'),
+                declaration: true,
+                declarationDir: 'listener/dist/'
+            })]
     },
     {
         input: 'listener/src/index.ts',
@@ -40,8 +46,9 @@ export default [
             format: 'esm',
             sourcemap: true
         },
+        external: [ '@themost/jspa', '@themost/common' ],
         plugins: [typescript({
-            tsconfig: './listener/tsconfig.json'
+            tsconfig: path.resolve(process.cwd(), 'listener/tsconfig.lib.json')
         })]
     }
 ];

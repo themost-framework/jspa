@@ -1,5 +1,10 @@
-import { DataContextBase, DataModelBase, SequentialEventEmitter } from '@themost/common';
-import { PreInit, PostInit, EntityListenerCollectionAnnotation, CallbackMethodCollectionAnnotation, CallbackMethodAnnotation, PreLoadEvent, PostLoadEvent, PostLoad, PreLoad, PreRemove, PreRemoveEvent, PostRemoveEvent, PostRemove, PreInitEvent, PostInitEvent, PreUpdate, PreUpdateEvent, PostUpdate, PostUpdateEvent, PostPersistEvent, PrePersistEvent, PrePersist, PostPersist } from '@themost/jspa';
+import { DataModelBase, SequentialEventEmitter } from '@themost/common';
+import { PreInit, PostInit, EntityListenerCollectionAnnotation,
+    CallbackMethodCollectionAnnotation, CallbackMethodAnnotation,
+    PreLoadEvent, PostLoadEvent, PostLoad, PreLoad,
+    PreRemove, PreRemoveEvent, PostRemoveEvent, PostRemove,
+    PreInitEvent, PostInitEvent, PreUpdate, PreUpdateEvent,
+    PostUpdate, PostUpdateEvent, PostPersistEvent, PrePersistEvent, PrePersist, PostPersist } from '@themost/jspa';
 
 declare interface CallbackDataEventArgs {
     model: DataModelBase;
@@ -274,7 +279,7 @@ function beforeInsert(event: CallbackDataEventArgs, callback: (err?: Error) => v
             listenerCallback.callback({
                 context: innerEvent.model.context,
                 target: innerEvent.target,
-                previous: innerEvent.previous,
+                model: innerEvent.model,
                 entityClass: EntityClass
             } as PrePersistEvent).then(() => {
                 return innerCallback();
@@ -289,7 +294,7 @@ function beforeInsert(event: CallbackDataEventArgs, callback: (err?: Error) => v
             listenerCallback.callback.bind(innerEvent.target)({
                 context: innerEvent.model.context,
                 target: innerEvent.target,
-                previous: innerEvent.previous,
+                model: innerEvent.model,
                 entityClass: EntityClass
             } as PrePersistEvent).then(() => {
                 return innerCallback();
@@ -312,6 +317,7 @@ function afterInsert(event: CallbackDataEventArgs, callback: (err?: Error) => vo
             listenerCallback.callback({
                 context: innerEvent.model.context,
                 target: innerEvent.target,
+                model: innerEvent.model,
                 entityClass: EntityClass
             } as PostPersistEvent).then(() => {
                 return innerCallback();
@@ -326,6 +332,7 @@ function afterInsert(event: CallbackDataEventArgs, callback: (err?: Error) => vo
             listenerCallback.callback.bind(innerEvent.target)({
                 context: innerEvent.model.context,
                 target: innerEvent.target,
+                model: innerEvent.model,
                 entityClass: EntityClass
             } as PostPersistEvent).then(() => {
                 return innerCallback();
@@ -340,11 +347,17 @@ function afterInsert(event: CallbackDataEventArgs, callback: (err?: Error) => vo
 }
 
 function beforeSave(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
-    return callback();
+    if (event.state === 1) {
+        return beforeInsert(event, callback);
+    }
+    return beforeUpgrade(event, callback);
 }
 
 function afterSave(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
-    return callback();
+    if (event.state === 1) {
+        return afterInsert(event, callback);
+    }
+    return afterSave(event, callback);
 }
 
 function beforeRemove(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
@@ -356,6 +369,7 @@ function beforeRemove(event: CallbackDataEventArgs, callback: (err?: Error) => v
             listenerCallback.callback({
                 context: innerEvent.model.context,
                 target: innerEvent.target,
+                model: event.model,
                 entityClass: EntityClass
             } as PreRemoveEvent).then(() => {
                 return innerCallback();
@@ -370,6 +384,7 @@ function beforeRemove(event: CallbackDataEventArgs, callback: (err?: Error) => v
             listenerCallback.callback.bind(innerEvent.target)({
                 context: innerEvent.model.context,
                 target: innerEvent.target,
+                model: event.model,
                 entityClass: EntityClass
             } as PreRemoveEvent).then(() => {
                 return innerCallback();
@@ -392,6 +407,7 @@ function afterRemove(event: CallbackDataEventArgs, callback: (err?: Error) => vo
             listenerCallback.callback({
                 context: innerEvent.model.context,
                 target: innerEvent.target,
+                model: innerEvent.model,
                 entityClass: EntityClass
             } as PostRemoveEvent).then(() => {
                 return innerCallback();
@@ -406,6 +422,7 @@ function afterRemove(event: CallbackDataEventArgs, callback: (err?: Error) => vo
             listenerCallback.callback.bind(innerEvent.target)({
                 context: innerEvent.model.context,
                 target: innerEvent.target,
+                model: innerEvent.model,
                 entityClass: EntityClass
             } as PostRemoveEvent).then(() => {
                 return innerCallback();
