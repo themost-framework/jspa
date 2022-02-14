@@ -1,28 +1,19 @@
-import { DataModelEvent, DataModelEventConverter, SetCallbackMethod } from './CallbackMethod';
-import { CallbackMethodAnnotation } from './EntityListener';
+import { DataContextBase, DataModelBase } from '@themost/common';
+import { SetCallbackMethod } from './CallbackMethod';
+import { EntityConstructor } from './Entity';
 
 function PostPersist() {
     return SetCallbackMethod(PostPersist);
 }
 
-Object.assign(PostPersist, {
-    toEvent: (callbackMethod: CallbackMethodAnnotation): DataModelEvent => {
-        return {
-            type: 'after.save',
-            event: (event: any, callback: (err?: Error) => void): void => {
-                if (event.state !== 1) {
-                    return callback();
-                }
-                return callbackMethod.callback.bind(event.target)().then(() => {
-                    return callback();
-                }).catch((err: Error | any) => {
-                    return callback(err);
-                });
-            }
-        }
-    }
-} as DataModelEventConverter);
+declare interface PostPersistEvent {
+    context?: DataContextBase,
+    entityClass?: EntityConstructor<any>;
+    model?: DataModelBase;
+    target?: any;
+}
 
 export {
+    PostPersistEvent,
     PostPersist
 }

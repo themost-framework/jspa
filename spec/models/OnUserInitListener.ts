@@ -1,5 +1,4 @@
-import { DataContextBase } from '@themost/common';
-import { PreInit, PostInit, EntityListenerConstructor, PreInitEvent, PostInitEvent } from '@themost/jspa';
+import { PreInit, PostInit, PreInitEvent, PostInitEvent } from '@themost/jspa';
 
 export class OnUserInitListener {
     @PreInit()

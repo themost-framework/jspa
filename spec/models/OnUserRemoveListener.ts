@@ -1,12 +1,12 @@
-import { PostRemove, PreRemove } from '@themost/jspa';
+import { PostRemove, PostRemoveEvent, PreRemove, PreRemoveEvent } from '@themost/jspa';
 
 export class OnUserRemoveListener {
     @PreRemove()
-    async onPreRemove(item: any) {
+    async onPreRemove(event: PreRemoveEvent) {
         //
     }
     @PostRemove()
-    async onPostRemove(item: any) {
+    async onPostRemove(item: PostRemoveEvent) {
         //
     }
 }

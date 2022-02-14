@@ -1,15 +1,15 @@
-import { DataContext } from '@themost/data';
+import { DataContextBase } from '@themost/common';
 import { EntityColumnAnnotation, ColumnAnnotation } from './Column';
 
 declare interface FormulaAnnotation {
-    closure: (context: DataContext) => any;
+    closure: (context: DataContextBase) => any;
 }
 
 declare interface FormulaColumnAnnotation extends ColumnAnnotation {
     formula?: FormulaAnnotation;
 }
 
-declare type FormulaClosure<T> = (context: DataContext) => T;
+declare type FormulaClosure<T> = (context: DataContextBase) => T;
 
 declare type FormulaSimpleClosure<T> = () => T;
 

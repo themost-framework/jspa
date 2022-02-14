@@ -1,5 +1,5 @@
 import { DataContextBase, DataModelBase, SequentialEventEmitter } from '@themost/common';
-import { PreInit, PostInit, EntityListenerCollectionAnnotation, CallbackMethodCollectionAnnotation, CallbackMethodAnnotation, PreLoadEvent, PostLoadEvent, PostLoad, PreLoad } from '@themost/jspa';
+import { PreInit, PostInit, EntityListenerCollectionAnnotation, CallbackMethodCollectionAnnotation, CallbackMethodAnnotation, PreLoadEvent, PostLoadEvent, PostLoad, PreLoad, PreRemove, PreRemoveEvent, PostRemoveEvent, PostRemove, PreInitEvent, PostInitEvent, PreUpdate, PreUpdateEvent, PostUpdate, PostUpdateEvent, PostPersistEvent, PrePersistEvent, PrePersist, PostPersist } from '@themost/jspa';
 
 declare interface CallbackDataEventArgs {
     model: DataModelBase;
@@ -46,18 +46,26 @@ function beforeUpgrade(event: CallbackDataEventArgs, callback: (err?: Error) => 
     const listenerCallbacks = inspectStaticCallbackOfType(PreInit, EntityClass);
     const eventEmitter = new SequentialEventEmitter();
     listenerCallbacks.forEach((listenerCallback) => {
-        eventEmitter.on('before.upgrade', (event1: CallbackDataEventArgs, callback1: (err?: Error) => void) => {
-            listenerCallback.callback(event1.model.context, EntityClass).then(() => {
-                return callback1();
+        eventEmitter.on('before.upgrade', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                model: innerEvent.model,
+                entityClass: EntityClass
+            } as PreInitEvent).then(() => {
+                return innerCallback();
             }).catch((error: Error) => {
-                return callback1(error);
+                return innerCallback(error);
             });
         });
     });
     const ownCallbacks = inspectCallbackOfType(PreInit, EntityClass);
     ownCallbacks.forEach((listenerCallback) => {
         eventEmitter.on('before.upgrade', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
-            listenerCallback.callback(innerEvent.model.context).then(() => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                model: innerEvent.model,
+                entityClass: EntityClass
+            } as PreInitEvent).then(() => {
                 return innerCallback();
             }).catch((error: Error) => {
                 return innerCallback(error);
@@ -74,18 +82,26 @@ function afterUpgrade(event: CallbackDataEventArgs, callback: (err?: Error) => v
     const listenerCallbacks = inspectStaticCallbackOfType(PostInit, EntityClass);
     const eventEmitter = new SequentialEventEmitter();
     listenerCallbacks.forEach((listenerCallback) => {
-        eventEmitter.on('after.upgrade', (event1: CallbackDataEventArgs, callback1: (err?: Error) => void) => {
-            listenerCallback.callback(event1.model.context, EntityClass).then(() => {
-                return callback1();
+        eventEmitter.on('after.upgrade', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                model: innerEvent.model,
+                entityClass: EntityClass
+            } as PostInitEvent).then(() => {
+                return innerCallback();
             }).catch((error: Error) => {
-                return callback1(error);
+                return innerCallback(error);
             });
         });
     });
-    const ownCallbacks = inspectCallbackOfType(PreInit, EntityClass);
+    const ownCallbacks = inspectCallbackOfType(PostInit, EntityClass);
     ownCallbacks.forEach((listenerCallback) => {
         eventEmitter.on('after.upgrade', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
-            listenerCallback.callback(innerEvent.model.context).then(() => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                model: innerEvent.model,
+                entityClass: EntityClass
+            } as PostInitEvent).then(() => {
                 return innerCallback();
             }).catch((error: Error) => {
                 return innerCallback(error);
@@ -102,16 +118,16 @@ function beforeExecute(event: CallbackDataEventArgs, callback: (err?: Error) => 
     const listenerCallbacks = inspectStaticCallbackOfType(PreLoad, EntityClass);
     const eventEmitter = new SequentialEventEmitter();
     listenerCallbacks.forEach((listenerCallback) => {
-        eventEmitter.on('before.execute', (event1: CallbackDataEventArgs, callback1: (err?: Error) => void) => {
+        eventEmitter.on('before.execute', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
             listenerCallback.callback({
-                context: event.model.context,
-                emitter: event.emitter,
-                query: event.query,
+                context: innerEvent.model.context,
+                emitter: innerEvent.emitter,
+                query: innerEvent.query,
                 entityClass: EntityClass
             } as PreLoadEvent).then(() => {
-                return callback1();
+                return innerCallback();
             }).catch((error: Error) => {
-                return callback1(error);
+                return innerCallback(error);
             });
         });
     });
@@ -140,16 +156,16 @@ function afterExecute(event: CallbackDataEventArgs, callback: (err?: Error) => v
     const listenerCallbacks = inspectStaticCallbackOfType(PostLoad, EntityClass);
     const eventEmitter = new SequentialEventEmitter();
     listenerCallbacks.forEach((listenerCallback) => {
-        eventEmitter.on('after.execute', (event1: CallbackDataEventArgs, callback1: (err?: Error) => void) => {
+        eventEmitter.on('after.execute', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
             listenerCallback.callback({
-                context: event.model.context,
-                emitter: event.emitter,
-                query: event.query,
+                context: innerEvent.model.context,
+                emitter: innerEvent.emitter,
+                query: innerEvent.query,
                 entityClass: EntityClass
-            } as PreLoadEvent).then(() => {
-                return callback1();
+            } as PostLoadEvent).then(() => {
+                return innerCallback();
             }).catch((error: Error) => {
-                return callback1(error);
+                return innerCallback(error);
             });
         });
     });
@@ -157,9 +173,9 @@ function afterExecute(event: CallbackDataEventArgs, callback: (err?: Error) => v
     ownCallbacks.forEach((listenerCallback) => {
         eventEmitter.on('after.execute', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
             listenerCallback.callback({
-                context: event.model.context,
-                emitter: event.emitter,
-                query: event.query,
+                context: innerEvent.model.context,
+                emitter: innerEvent.emitter,
+                query: innerEvent.query,
                 entityClass: EntityClass
             } as PostLoadEvent).then(() => {
                 return innerCallback();
@@ -173,6 +189,156 @@ function afterExecute(event: CallbackDataEventArgs, callback: (err?: Error) => v
     });
 }
 
+function beforeUpdate(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
+    const EntityClass = event.model.getDataObjectType();
+    const listenerCallbacks = inspectStaticCallbackOfType(PreUpdate, EntityClass);
+    const eventEmitter = new SequentialEventEmitter();
+    listenerCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('before.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                previous: innerEvent.previous,
+                entityClass: EntityClass
+            } as PreUpdateEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    const ownCallbacks = inspectCallbackOfType(PreUpdate, EntityClass);
+    ownCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('before.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback.bind(innerEvent.target)({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                previous: innerEvent.previous,
+                entityClass: EntityClass
+            } as PreUpdateEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    return eventEmitter.emit('before.save', event, (err?: Error) => {
+        return callback(err);
+    });
+}
+
+function afterUpdate(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
+    const EntityClass = event.model.getDataObjectType();
+    const listenerCallbacks = inspectStaticCallbackOfType(PostUpdate, EntityClass);
+    const eventEmitter = new SequentialEventEmitter();
+    listenerCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('after.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                previous: innerEvent.previous,
+                entityClass: EntityClass
+            } as PostUpdateEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    const ownCallbacks = inspectCallbackOfType(PostUpdate, EntityClass);
+    ownCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('after.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback.bind(innerEvent.target)({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                previous: innerEvent.previous,
+                entityClass: EntityClass
+            } as PostUpdateEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    return eventEmitter.emit('after.save', event, (err?: Error) => {
+        return callback(err);
+    });
+}
+
+function beforeInsert(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
+    const EntityClass = event.model.getDataObjectType();
+    const listenerCallbacks = inspectStaticCallbackOfType(PrePersist, EntityClass);
+    const eventEmitter = new SequentialEventEmitter();
+    listenerCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('before.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                previous: innerEvent.previous,
+                entityClass: EntityClass
+            } as PrePersistEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    const ownCallbacks = inspectCallbackOfType(PrePersist, EntityClass);
+    ownCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('before.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback.bind(innerEvent.target)({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                previous: innerEvent.previous,
+                entityClass: EntityClass
+            } as PrePersistEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    return eventEmitter.emit('before.save', event, (err?: Error) => {
+        return callback(err);
+    });
+}
+
+function afterInsert(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
+    const EntityClass = event.model.getDataObjectType();
+    const listenerCallbacks = inspectStaticCallbackOfType(PostPersist, EntityClass);
+    const eventEmitter = new SequentialEventEmitter();
+    listenerCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('after.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                entityClass: EntityClass
+            } as PostPersistEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    const ownCallbacks = inspectCallbackOfType(PostPersist, EntityClass);
+    ownCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('after.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback.bind(innerEvent.target)({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                entityClass: EntityClass
+            } as PostPersistEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    return eventEmitter.emit('after.save', event, (err?: Error) => {
+        return callback(err);
+    });
+}
+
 function beforeSave(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
     return callback();
 }
@@ -181,12 +347,76 @@ function afterSave(event: CallbackDataEventArgs, callback: (err?: Error) => void
     return callback();
 }
 
-function beforeRemove(eventArgs: CallbackDataEventArgs, callback: (err?: Error) => void): void {
-    return callback();
+function beforeRemove(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
+    const EntityClass = event.model.getDataObjectType();
+    const listenerCallbacks = inspectStaticCallbackOfType(PreRemove, EntityClass);
+    const eventEmitter = new SequentialEventEmitter();
+    listenerCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('before.remove', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                entityClass: EntityClass
+            } as PreRemoveEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    const ownCallbacks = inspectCallbackOfType(PreRemove, EntityClass);
+    ownCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('before.remove', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback.bind(innerEvent.target)({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                entityClass: EntityClass
+            } as PreRemoveEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    return eventEmitter.emit('before.remove', event, (err?: Error) => {
+        return callback(err);
+    });
 }
 
-function afterRemove(eventArgs: CallbackDataEventArgs, callback: (err?: Error) => void): void {
-    return callback();
+function afterRemove(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
+    const EntityClass = event.model.getDataObjectType();
+    const listenerCallbacks = inspectStaticCallbackOfType(PostRemove, EntityClass);
+    const eventEmitter = new SequentialEventEmitter();
+    listenerCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('after.remove', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                entityClass: EntityClass
+            } as PostRemoveEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    const ownCallbacks = inspectCallbackOfType(PostRemove, EntityClass);
+    ownCallbacks.forEach((listenerCallback) => {
+        eventEmitter.on('after.remove', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
+            listenerCallback.callback.bind(innerEvent.target)({
+                context: innerEvent.model.context,
+                target: innerEvent.target,
+                entityClass: EntityClass
+            } as PostRemoveEvent).then(() => {
+                return innerCallback();
+            }).catch((error: Error) => {
+                return innerCallback(error);
+            });
+        });
+    });
+    return eventEmitter.emit('after.remove', event, (err?: Error) => {
+        return callback(err);
+    });
 }
 
 export {

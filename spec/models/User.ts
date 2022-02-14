@@ -1,6 +1,6 @@
 import { DataContextBase } from '@themost/common';
 import { DataContext } from '@themost/data';
-import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostInit, PostLoad, PreInit } from '@themost/jspa';
+import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostInit, PostInitEvent, PostLoad, PreInit, PreInitEvent } from '@themost/jspa';
 import { Account, AccountType } from './Account';
 import { Group } from './Group';
 import { OnUserInitListener } from './OnUserInitListener';
@@ -31,13 +31,13 @@ class User extends Account {
     }
 
     @PreInit()
-    static onPreInit(context: DataContextBase) {
-        // do nothing
+    static onPreInit(event: PreInitEvent) {
+        //
     }
 
     @PostInit()
-    static onPostInit(context: DataContextBase) {
-        // do nothing
+    static onPostInit(event: PostInitEvent) {
+        //
     }
 
 }
