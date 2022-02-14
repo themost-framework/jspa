@@ -8,7 +8,7 @@ rollup.config.js
 tsconfig.json
 jsconfig.json
 listener/tsconfig.lib.json
-tsconfig.json
+listener/tsconfig.json
 
 # dev
 .theia
