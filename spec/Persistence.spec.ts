@@ -1,6 +1,6 @@
-import { ConfigurationBase } from '@themost/common';
+import { ConfigurationBase, DataModelProperties } from '@themost/common';
 import { EntityAnnotation, IdColumnAnnotation, EntityTableAnnotation,
-    EntityColumnAnnotation, EntityInheritanceAnnotation, InheritanceType, EntityLoaderStrategy, DataModelSchema } from '@themost/jspa';
+    EntityColumnAnnotation, EntityInheritanceAnnotation, InheritanceType, EntityLoaderStrategy } from '@themost/jspa';
 import { Account } from './models/Account';
 import { ActionStatusType } from './models/ActionStatusType';
 import { Enumeration } from './models/Enumeration';
@@ -20,7 +20,7 @@ describe('Persistence', () => {
         expect(column).toBeTruthy();
         expect(column.id).toBeTrue();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
-        const schema: DataModelSchema = entityLoader.getModelFromEntityClass(Thing);
+        const schema: DataModelProperties = entityLoader.getModelFromEntityClass(Thing);
         const field = schema.fields.find((item) => {
             return item.primary;
         });
@@ -42,7 +42,7 @@ describe('Persistence', () => {
         expect(target.Inheritance).toBeTruthy();
         expect(target.Inheritance.strategy).toBe(InheritanceType.SingleTable);
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
-        const schema: DataModelSchema = entityLoader.getModelFromEntityClass(ActionStatusType);
+        const schema: DataModelProperties = entityLoader.getModelFromEntityClass(ActionStatusType);
         expect(schema.inherits).toBe(null);
         expect(schema.implements).toBe('Enumeration');
     });

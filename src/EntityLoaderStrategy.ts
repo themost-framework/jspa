@@ -51,9 +51,6 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
     }
 
     readSync(): string[] {
-        if (this._models != null) {
-            return Array.from(this._models.keys());
-        }
         const models: Map<string, any> = new Map();
         for (const modulePath of this.imports) {
             const module = require(modulePath);

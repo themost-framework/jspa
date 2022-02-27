@@ -1,6 +1,5 @@
 export * from './types';
 export * from './Errors';
-export * from './DataModelSchema';
 export * from './ColumnType';
 export * from './EntityLoaderStrategy';
 export * from './InheritanceType';
