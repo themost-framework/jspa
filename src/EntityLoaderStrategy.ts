@@ -136,7 +136,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     result.constraints = entityTable.Table.uniqueConstraints.map((item) => {
                         return {
                             type: 'unique',
-                            fields: item.columnName
+                            fields: item.columnNames
                         }
                     });
                 }

@@ -15,7 +15,7 @@ class User extends Account {
         updatable: false,
         insertable: false
     })
-    public accountType?: number = AccountType.User;
+    public accountType?: AccountType = AccountType.User;
 
     @ManyToMany({
         targetEntity: 'Group',

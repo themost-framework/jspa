@@ -1,5 +1,5 @@
-import { ConfigurationBase } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, DataModelSchema, EntityTypeAnnotation } from '@themost/jspa';
+import { ConfigurationBase, DataModelProperties } from '@themost/common';
+import { EntityColumnAnnotation, EntityLoaderStrategy, EntityTypeAnnotation } from '@themost/jspa';
 import { Account } from './models/Account';
 import { Thing } from './models/Thing';
 
@@ -12,7 +12,7 @@ describe('Column', () => {
         expect(column.name).toBe('accountType');
         expect(column.nullable).toBeFalse();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
-        const schema: DataModelSchema = entityLoader.getModelFromEntityClass(Account);
+        const schema: DataModelProperties = entityLoader.getModelFromEntityClass(Account);
         expect(schema).toBeTruthy();
     });
 

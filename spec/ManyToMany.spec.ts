@@ -1,5 +1,5 @@
-import { ConfigurationBase } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, DataModelSchema, ManyToManyColumnAnnotation, JoinTableColumnAnnotation } from '@themost/jspa';
+import { ConfigurationBase, DataModelProperties } from '@themost/common';
+import { EntityColumnAnnotation, EntityLoaderStrategy, ManyToManyColumnAnnotation, JoinTableColumnAnnotation } from '@themost/jspa';
 import { User } from './models/User';
 import { Group } from './models/Group';
 
@@ -10,7 +10,7 @@ describe('ManyToManyAssocation', () => {
         expect(column).toBeTruthy();
         expect(column.manyToMany).toBeTruthy();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
-        let schema: DataModelSchema = entityLoader.getModelFromEntityClass(User);
+        let schema: DataModelProperties = entityLoader.getModelFromEntityClass(User);
         expect(schema).toBeTruthy();
         let field = schema.fields.find((item) => item.name === 'groups');
         expect(field).toBeTruthy();
@@ -31,7 +31,7 @@ describe('ManyToManyAssocation', () => {
         expect(column.joinTable).toBeTruthy();
         expect(column.joinTable.name).toBe('GroupMembers');
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
-        const schema: DataModelSchema = entityLoader.getModelFromEntityClass(Group);
+        const schema: DataModelProperties = entityLoader.getModelFromEntityClass(Group);
         expect(schema).toBeTruthy();
         const field = schema.fields.find((item) => item.name === 'members');
         expect(field).toBeTruthy();

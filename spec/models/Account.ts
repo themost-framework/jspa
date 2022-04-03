@@ -7,12 +7,23 @@ enum AccountType {
 }
 
 @Entity()
-@Table()
+@Table({
+    uniqueConstraints: [
+        {
+            columnNames: ['name']
+        }
+    ]
+})
 class Account extends Thing {
+    @Column({
+        nullable: false,
+        type: 'Integer'
+    })
+    public accountType?: AccountType;
     @Column({
         nullable: false
     })
-    public accountType?: number;
+    public name?: string;
     @Column({
         nullable: false
     })

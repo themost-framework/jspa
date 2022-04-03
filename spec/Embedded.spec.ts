@@ -1,5 +1,5 @@
-import { ConfigurationBase } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, DataModelSchema, JoinTableColumnAnnotation, EmbeddedEntityAnnotation, EmbeddedableEntityAnnotation } from '@themost/jspa';
+import { ConfigurationBase, DataModelProperties } from '@themost/common';
+import { EntityColumnAnnotation, EntityLoaderStrategy, JoinTableColumnAnnotation, EmbeddedEntityAnnotation, EmbeddedableEntityAnnotation } from '@themost/jspa';
 import { PostalAddress } from './models';
 import { Party } from './models/Party';
 
@@ -10,7 +10,7 @@ describe('Embedded', () => {
         expect(column).toBeTruthy();
         expect(column.embedded).toBeTruthy();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
-        const schema: DataModelSchema = entityLoader.getModelFromEntityClass(Party);
+        const schema: DataModelProperties = entityLoader.getModelFromEntityClass(Party);
         expect(schema).toBeTruthy();
         const field = schema.fields.find((item) => item.name === 'address');
         expect(field).toBeTruthy();
@@ -23,7 +23,7 @@ describe('Embedded', () => {
         expect(target).toBeTruthy();
         expect(target.embeddedable).toBeTruthy();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
-        const schema: DataModelSchema = entityLoader.getModelFromEntityClass(PostalAddress);
+        const schema: DataModelProperties = entityLoader.getModelFromEntityClass(PostalAddress);
         expect(schema).toBeTruthy();
         expect(schema.hidden).toBe(true);
     });

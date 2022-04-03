@@ -18,7 +18,7 @@ declare interface TableAnnotation {
     /**
      * Unique constraints that are to be placed on the table.
      */
-    uniqueConstraints?: { columnName:string[] }[];
+    uniqueConstraints?: { columnNames:string[] }[];
 }
 
 declare interface EntityTableAnnotation {
