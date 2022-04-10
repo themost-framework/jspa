@@ -50,5 +50,32 @@ export default [
         plugins: [typescript({
             tsconfig: path.resolve(process.cwd(), 'listener/tsconfig.lib.json')
         })]
+    },
+    {
+        input: path.resolve(process.cwd(), 'platform-server/src/index.ts'),
+        output: {
+            dir: 'platform-server/dist',
+            format: 'cjs',
+            sourcemap: true
+        },
+        external: [ '@themost/jspa', '@themost/common' ],
+        plugins: [
+            typescript({
+                tsconfig: path.resolve(process.cwd(), 'platform-server/tsconfig.lib.json'),
+                declaration: true,
+                declarationDir: 'platform-server/dist/'
+            })]
+    },
+    {
+        input: 'platform-server/src/index.ts',
+        output: {
+            file: 'platform-server/dist/index.esm.js',
+            format: 'esm',
+            sourcemap: true
+        },
+        external: [ '@themost/jspa', '@themost/common' ],
+        plugins: [typescript({
+            tsconfig: path.resolve(process.cwd(), 'platform-server/tsconfig.lib.json')
+        })]
     }
 ];

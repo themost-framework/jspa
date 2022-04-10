@@ -1,11 +1,11 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
-import { EntityLoaderStrategy } from '@themost/jspa';
+import { DefaultEntityLoaderStrategy } from '@themost/jspa/platform-server';
 import { User } from './models/User';
 import path from 'path';
 
 describe('EntityLoaderStrategy', () => {
     it('should get entity class', () => {
-        const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
+        const entityLoader = new DefaultEntityLoaderStrategy(new ConfigurationBase());
         const schema: DataModelProperties = entityLoader.getModelFromEntityClass(User);
         expect(schema.name).toBe('User');
         expect(schema.version).toBe('1.0.0');
@@ -17,7 +17,7 @@ describe('EntityLoaderStrategy', () => {
         configuration.setSourceAt('settings/jspa/imports', [
             path.resolve('./spec/models/index')
         ]);
-        const entityLoader = new EntityLoaderStrategy(configuration);
+        const entityLoader = new DefaultEntityLoaderStrategy(configuration);
         const items = entityLoader.readSync();
         expect(items).toBeInstanceOf(Array);
         expect(items).toContain('User');

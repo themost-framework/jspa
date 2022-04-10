@@ -1,5 +1,4 @@
 {
-    "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "baseUrl": ".",
         "outDir": "./dist/",
@@ -7,24 +6,20 @@
         "module": "ESNext",
         "sourceMap": true,
         "esModuleInterop": true,
-        "declaration": true,
+        "declaration": false,
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declarationDir": "./dist/",
         "lib": [
             "DOM",
             "ES2017"
         ],
         "paths": {
             "@themost/jspa": [
-                "./src/index"
+                "../src/index"
             ],
             "@themost/jspa/listener": [
-                "./listener/src/index"
-            ],
-            "@themost/jspa/platform-server": [
-                "./platform-server/src/index"
+                "../listener/src/index"
             ]
         }
     },
@@ -33,7 +28,6 @@
         "src/**/*.d.ts"
     ],
     "exclude": [
-        "node_modules",
-        "src/**/*.spec.ts"
+        "node_modules"
     ]
 }

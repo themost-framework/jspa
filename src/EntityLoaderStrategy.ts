@@ -17,32 +17,29 @@ import { DataFieldBase } from '@themost/common';
 
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
 
-    public imports: string[];
-    private _models: Map<string, any> = new Map();
+    public imports: any[] = [];
+    protected models: Map<string, any> = new Map();
 
     constructor(config: ConfigurationBase) {
         super(config);
-        const values = config.getSourceAt('settings/jspa/imports') || [];
-        Args.check(Array.isArray(values), new Error('Invalid configuration. The persistent annotation imports, defined by `settings/jspa/imports`, must be an array of modules.'));
-        this.imports = values;
     }
 
     getModelDefinition(name: string): any {
-        const model = this._models.get(name);
+        const model = this.models.get(name);
         if (model == null) {
             return null;
         }
         if (typeof model === 'function') {
             const modelDefinition = this.getModelFromEntityClass(model);
-            this._models.set(name, modelDefinition);
+            this.models.set(name, modelDefinition);
             return modelDefinition;
         }
         return model;
     }
 
     setModelDefinition(data: any): SchemaLoaderStrategy {
-        this._models = this._models || new Map();
-        this._models.set(data.name, data);
+        this.models = this.models || new Map();
+        this.models.set(data.name, data);
         return this;
     }
 
@@ -52,8 +49,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
 
     readSync(): string[] {
         const models: Map<string, any> = new Map();
-        for (const modulePath of this.imports) {
-            const module = require(modulePath);
+        for (const module of this.imports) {
             Object.keys(module).forEach((member: string) => {
                 if (Object.prototype.hasOwnProperty.call(module, member)) {
                     const exportedMember = module[member];
@@ -66,15 +62,15 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 }
             });
         }
-        this._models = models;
-        return Array.from(this._models.keys());
+        this.models = models;
+        return Array.from(this.models.keys());
     }
 
     getModels(): string[] {
-        if (this._models == null) {
+        if (this.models == null) {
             return this.readSync();
         }
-        return Array.from(this._models.keys());
+        return Array.from(this.models.keys());
     }
 
     getModelFromEntityClass(entityClass: any): DataModelProperties {
