@@ -29,8 +29,9 @@
   "homepage": "https://github.com/themost-framework/jspa#readme",
   "peerDependencies": {
     "@themost/common": "next",
-    "@themost/data": "next",
-    "@themost/query": "next"
+    "@themost/data": "latest",
+    "@themost/query": "next",
+    "@themost/xml": "latest"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.3.0",
