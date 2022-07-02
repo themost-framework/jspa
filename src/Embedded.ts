@@ -5,8 +5,8 @@ declare interface EmbeddedEntityAnnotation extends ColumnAnnotation {
     embedded?: boolean;
 }
 
-declare interface EmbeddedableEntityAnnotation extends ColumnAnnotation {
-    embeddedable?: boolean;
+declare interface EmbeddableEntityAnnotation extends ColumnAnnotation {
+    embeddable?: boolean;
 }
 
 function Embedded() {
@@ -23,19 +23,19 @@ function Embedded() {
     };
 }
 
-function Embeddedable() {
+function Embeddable() {
     return (target: any) => {
         Entity()(target);
-        const entity: EmbeddedableEntityAnnotation = target as EmbeddedableEntityAnnotation;
+        const entity: EmbeddableEntityAnnotation = target as EmbeddableEntityAnnotation;
         Object.assign(entity, {
-            embeddedable: true
-        } as EmbeddedableEntityAnnotation);
+            embeddable: true
+        } as EmbeddableEntityAnnotation);
     };
 }
 
 export {
     EmbeddedEntityAnnotation,
-    EmbeddedableEntityAnnotation,
+    EmbeddableEntityAnnotation,
     Embedded,
-    Embeddedable
+    Embeddable
 }

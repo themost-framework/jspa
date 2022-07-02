@@ -1,11 +1,7 @@
-import { JoinTableAnnotation } from './JoinTable';
 import { CascadeType } from './CascadeType';
 import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
-import { JoinColumnAnnotation } from './JoinColumn';
-import { capitalize, camelCase } from 'lodash';
 import { EntityNotFoundException } from './Errors';
-import { plural } from 'pluralize';
 declare type AnyConstructor<T> = new(...args: any[]) => T;
 
 declare interface ManyToManyAnnotation {

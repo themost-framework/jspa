@@ -1,4 +1,4 @@
-import { Args, ConfigurationBase, DataModelBase, DataModelProperties } from '@themost/common';
+import { ConfigurationBase, DataModelProperties } from '@themost/common';
 import { SchemaLoaderStrategy } from '@themost/data';
 import { EntityInheritanceAnnotation } from './Inheritance';
 import { EntityColumnAnnotation } from './Column';
@@ -8,7 +8,7 @@ import { InheritanceType } from './InheritanceType';
 import { IdColumnAnnotation } from './Id';
 import { ManyToOneColumnAnnotation } from './ManyToOne';
 import { FetchType } from './FetchType';
-import { EmbeddedableEntityAnnotation, EmbeddedEntityAnnotation } from './Embedded';
+import { EmbeddableEntityAnnotation, EmbeddedEntityAnnotation } from './Embedded';
 import { ManyToManyColumnAnnotation } from './ManyToMany';
 import { JoinTableColumnAnnotation } from './JoinTable';
 import { OneToManyColumnAnnotation } from './OneToMany';
@@ -116,8 +116,8 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 }
             }
         }
-        const embeddedableEntity = entityClass as EmbeddedableEntityAnnotation;
-        if (embeddedableEntity.embeddedable) {
+        const embeddableEntity = entityClass as EmbeddableEntityAnnotation;
+        if (embeddableEntity.embeddable) {
             result.hidden = true;
         }
         // get table annotation

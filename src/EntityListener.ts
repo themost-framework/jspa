@@ -1,5 +1,3 @@
-import { EntityTypeAnnotation } from './Entity';
-
 declare type EntityListenerConstructor<T> = new(...args: any[]) => T;
 
 declare type CallbackMethod = () => any;

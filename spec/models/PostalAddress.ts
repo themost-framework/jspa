@@ -1,8 +1,8 @@
-import { Basic, Column, Embeddedable, Entity } from '@themost/jspa';
+import { Basic, Column, Embeddable, Entity } from '@themost/jspa';
 import { ContactPoint } from './ContactPoint';
 
 @Entity()
-@Embeddedable()
+@Embeddable()
 class PostalAddress extends ContactPoint {
     @Basic()
     public postOfficeBoxNumber?: string;

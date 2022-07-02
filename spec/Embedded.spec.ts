@@ -1,5 +1,5 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, JoinTableColumnAnnotation, EmbeddedEntityAnnotation, EmbeddedableEntityAnnotation } from '@themost/jspa';
+import { EntityColumnAnnotation, EntityLoaderStrategy, JoinTableColumnAnnotation, EmbeddedEntityAnnotation, EmbeddableEntityAnnotation } from '@themost/jspa';
 import { PostalAddress } from './models';
 import { Party } from './models/Party';
 
@@ -18,10 +18,10 @@ describe('Embedded', () => {
         expect(field.nested).toBe(true);
     });
 
-    it('should use @Embeddedable', () => {
-        const target: EmbeddedableEntityAnnotation = PostalAddress as EmbeddedableEntityAnnotation;
+    it('should use @Embeddable', () => {
+        const target: EmbeddableEntityAnnotation = PostalAddress as EmbeddableEntityAnnotation;
         expect(target).toBeTruthy();
-        expect(target.embeddedable).toBeTruthy();
+        expect(target.embeddable).toBeTruthy();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
         const schema: DataModelProperties = entityLoader.getModelFromEntityClass(PostalAddress);
         expect(schema).toBeTruthy();
