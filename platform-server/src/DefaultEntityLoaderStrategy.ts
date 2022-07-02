@@ -1,5 +1,5 @@
 import { Args, ConfigurationBase } from '@themost/common';
-import { EntityTypeAnnotation, EntityLoaderStrategy } from '@themost/jspa';
+import { EntityLoaderStrategy } from '@themost/jspa';
 
 class DefaultEntityLoaderStrategy extends EntityLoaderStrategy {
 

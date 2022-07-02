@@ -194,6 +194,7 @@ function afterExecute(event: CallbackDataEventArgs, callback: (err?: Error) => v
     });
 }
 
+// noinspection JSUnusedLocalSymbols
 function beforeUpdate(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
     const EntityClass = event.model.getDataObjectType();
     const listenerCallbacks = inspectStaticCallbackOfType(PreUpdate, EntityClass);
@@ -232,6 +233,7 @@ function beforeUpdate(event: CallbackDataEventArgs, callback: (err?: Error) => v
     });
 }
 
+// noinspection JSUnusedLocalSymbols
 function afterUpdate(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
     const EntityClass = event.model.getDataObjectType();
     const listenerCallbacks = inspectStaticCallbackOfType(PostUpdate, EntityClass);
