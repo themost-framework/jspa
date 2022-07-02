@@ -1,4 +1,4 @@
-import { Basic, Column, Embeddable, Entity } from '@themost/jspa';
+import { Basic, Embeddable, Entity } from '@themost/jspa';
 import { ContactPoint } from './ContactPoint';
 
 @Entity()

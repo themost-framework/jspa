@@ -1,5 +1,3 @@
-import { DataContextBase } from '@themost/common';
-import { DataContext } from '@themost/data';
 import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostInit, PostInitEvent, PostLoad, PreInit, PreInitEvent } from '@themost/jspa';
 import { Account, AccountType } from './Account';
 import { Group } from './Group';
@@ -30,11 +28,13 @@ class User extends Account {
         //
     }
 
+    // noinspection JSUnusedLocalSymbols
     @PreInit()
     static onPreInit(event: PreInitEvent) {
         //
     }
 
+    // noinspection JSUnusedLocalSymbols
     @PostInit()
     static onPostInit(event: PostInitEvent) {
         //

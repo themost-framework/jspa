@@ -1,4 +1,4 @@
-import {Column, Entity, Table} from '@themost/jspa';
+import {Column, Entity} from '@themost/jspa';
 import { Party } from './Party';
 @Entity()
 class Person extends Party {

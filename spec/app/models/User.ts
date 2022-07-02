@@ -25,11 +25,13 @@ class User extends Account {
         //
     }
 
+    // noinspection JSUnusedLocalSymbols
     @PreInit()
     static onPreInit(event: PreInitEvent) {
         //
     }
 
+    // noinspection JSUnusedLocalSymbols
     @PostInit()
     static onPostInit(event: PostInitEvent) {
         //

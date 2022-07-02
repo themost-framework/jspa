@@ -1,3 +1,5 @@
+// noinspection JSValidateJSDoc
+
 import initSqlJs from 'sql.js';
 import {SqlUtils, QueryExpression, QueryField} from '@themost/query';
 import {TestFormatter} from './TestFormatter';
@@ -5,7 +7,7 @@ import {TraceUtils} from '@themost/common';
 import {readFileSync} from 'fs';
 
 const INSTANCE_DB = new Map();
-const DateTimeRegex = /^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])(?:[T ](\d+):(\d+)(?::(\d+)(?:\.(\d+))?)?)(?:Z(-?\d*))?([+-](\d+):(\d+))?$/;
+const DateTimeRegex = /^\d{4}-(0\d|1[0-2])-([0-2]\d|3[01])(?:[T ](\d+):(\d+)(?::(\d+)(?:\.(\d+))?)?)(?:Z(-?\d*))?([+-](\d+):(\d+))?$/;
 
 /**
  *
@@ -852,7 +854,7 @@ export class TestAdapter {
                 sql = query;
             }
             else {
-                //format query expression or any object that may be act as query expression
+                //format query expression or any object that may act as query expression
                 const formatter = new TestFormatter();
                 sql = formatter.format(query);
             }

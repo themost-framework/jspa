@@ -1,7 +1,7 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, JoinTableColumnAnnotation, EmbeddedEntityAnnotation, EmbeddableEntityAnnotation } from '@themost/jspa';
+import { EntityColumnAnnotation, EntityLoaderStrategy, EmbeddedEntityAnnotation, EmbeddableEntityAnnotation } from '@themost/jspa';
 import { PostalAddress } from './models';
-import { Party } from './models/Party';
+import { Party } from './models';
 
 describe('Embedded', () => {
     it('should use @Embedded', () => {

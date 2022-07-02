@@ -1,5 +1,5 @@
 import { EntityTableAnnotation } from '@themost/jspa';
-import { Account } from './models/Account';
+import { Account } from './models';
 
 describe('TableAnnotation', () => {
     it('should use @Table', () => {

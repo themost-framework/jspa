@@ -1,15 +1,12 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
-import { EntityAnnotation, IdColumnAnnotation, EntityTableAnnotation,
-    EntityColumnAnnotation, EntityInheritanceAnnotation, InheritanceType, EntityLoaderStrategy } from '@themost/jspa';
-import { Account } from './models/Account';
-import { ActionStatusType } from './models/ActionStatusType';
-import { Enumeration } from './models/Enumeration';
-import { Person } from './models/Person';
-import { Thing } from './models/Thing';
+import { EntityAnnotation, IdColumnAnnotation, EntityColumnAnnotation, EntityInheritanceAnnotation, InheritanceType, EntityLoaderStrategy } from '@themost/jspa';
+import { ActionStatusType } from './models';
+import { Enumeration } from './models';
+import { Person } from './models';
+import { Thing } from './models';
 
 describe('Persistence', () => {
     it('should use @Entity', () => {
-        const person = new Person();
         const annotation: EntityAnnotation = Person as EntityAnnotation;
         expect(annotation.name).toBe('Person');
     });

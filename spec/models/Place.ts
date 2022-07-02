@@ -1,4 +1,4 @@
-import { Basic, CascadeType, Column, Embedded, Entity, FetchType, ManyToMany, ManyToOne, OneToMany } from '@themost/jspa';
+import { Basic, CascadeType, Column, Embedded, Entity, FetchType, ManyToOne, OneToMany } from '@themost/jspa';
 import { PostalAddress } from '.';
 import { Thing } from './Thing';
 
@@ -40,7 +40,7 @@ class Place extends Thing {
     public containsPlace?: Place;
 
     @Basic()
-    public isAccesibleForFree?: boolean;
+    public isAccessibleForFree?: boolean;
 
     @ManyToOne({
         fetchType: FetchType.Lazy,

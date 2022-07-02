@@ -1,9 +1,9 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
 import { EntityColumnAnnotation, EntityLoaderStrategy, ManyToManyColumnAnnotation, JoinTableColumnAnnotation } from '@themost/jspa';
-import { User } from './models/User';
+import { User } from './models';
 import { Group } from './models/Group';
 
-describe('ManyToManyAssocation', () => {
+describe('ManyToManyAssociation', () => {
     it('should use @ManyToMany', () => {
         const target: EntityColumnAnnotation = User as EntityColumnAnnotation;
         const column: ManyToManyColumnAnnotation = target.Column.get('groups');

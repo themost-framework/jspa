@@ -1,8 +1,8 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
 import { EntityColumnAnnotation, EntityLoaderStrategy, ManyToOneColumnAnnotation } from '@themost/jspa';
-import { Thing } from './models/Thing';
+import { Thing } from './models';
 
-describe('ManyToOneAssocation', () => {
+describe('ManyToOneAssociation', () => {
     it('should use @ManyToOne', () => {
         const target: EntityColumnAnnotation = Thing as EntityColumnAnnotation;
         const column: ManyToOneColumnAnnotation = target.Column.get('createdBy');

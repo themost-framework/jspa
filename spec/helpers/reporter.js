@@ -1,3 +1,5 @@
+// noinspection JSCheckFunctionSignatures
+
 const {SpecReporter} = require('jasmine-spec-reporter');
 
 jasmine.getEnv().clearReporters();               // remove default reporter logs

@@ -1,6 +1,6 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
 import { DefaultEntityLoaderStrategy } from '@themost/jspa/platform-server';
-import { User } from './models/User';
+import { User } from './models';
 import path from 'path';
 
 describe('EntityLoaderStrategy', () => {

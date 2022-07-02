@@ -1,7 +1,6 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, EntityTypeAnnotation } from '@themost/jspa';
-import { Account } from './models/Account';
-import { Thing } from './models/Thing';
+import { EntityColumnAnnotation, EntityLoaderStrategy} from '@themost/jspa';
+import { Account } from './models';
 
 describe('Column', () => {
     it('should use @Column', () => {
