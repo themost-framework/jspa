@@ -28,9 +28,9 @@
   },
   "homepage": "https://github.com/themost-framework/jspa#readme",
   "peerDependencies": {
-    "@themost/common": "next",
+    "@themost/common": "latest",
     "@themost/data": "latest",
-    "@themost/query": "next",
+    "@themost/query": "latest",
     "@themost/xml": "latest"
   },
   "devDependencies": {
