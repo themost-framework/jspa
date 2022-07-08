@@ -44,6 +44,7 @@ function ManyToMany(annotation?: ManyToManyAnnotation) {
             targetEntity = annotation.targetEntity
         } else {
             // get type from reflect metadata
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             const r: { name?: string; prototype?: any } = Reflect.getMetadata('design:type', target, propertyKey);
             if (r && r.name) {
                 targetEntity = r.name;

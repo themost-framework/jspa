@@ -15,7 +15,7 @@ module.exports = {
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "tsconfig.json",
+        "project": "./**/tsconfig.json",
         "sourceType": "module"
     },
     "plugins": [
@@ -61,7 +61,13 @@ module.exports = {
         "@typescript-eslint/dot-notation": "error",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
-        "@typescript-eslint/naming-convention": "error",
+        "@typescript-eslint/naming-convention": [
+            "warn",
+            {
+                "selector": 'default',
+                "format": [ "camelCase", "PascalCase" ]
+            }
+        ],
         "@typescript-eslint/no-empty-function": "error",
         "@typescript-eslint/no-empty-interface": "error",
         "@typescript-eslint/no-explicit-any": "off",
@@ -94,6 +100,8 @@ module.exports = {
         ],
         "@typescript-eslint/typedef": "off",
         "@typescript-eslint/unified-signatures": "error",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
         "complexity": "off",
         "constructor-super": "error",
         "dot-notation": "error",
@@ -134,7 +142,7 @@ module.exports = {
         "no-fallthrough": "off",
         "no-invalid-this": "off",
         "no-new-wrappers": "error",
-        "no-shadow": "error",
+        "no-shadow": "off",
         "no-throw-literal": "error",
         "no-trailing-spaces": "error",
         "no-undef-init": "error",
@@ -149,9 +157,9 @@ module.exports = {
             "error",
             "never"
         ],
-        "prefer-arrow/prefer-arrow-functions": "error",
+        "prefer-arrow/prefer-arrow-functions": "off",
         "prefer-const": "error",
-        "quotes": "error",
+        "quotes": [ "warn", "single"],
         "radix": "error",
         "spaced-comment": [
             "error",

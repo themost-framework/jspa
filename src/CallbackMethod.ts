@@ -10,6 +10,7 @@ function SetCallbackMethod(method: CallbackMethod) {
         const entityClass: CallbackMethodCollectionAnnotation = target.constructor as CallbackMethodCollectionAnnotation;
         entityClass.CallbackMethods.push({
             type: method,
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             name: `${target.constructor.name}.${propertyKey}`,
             callback: propertyDescriptor.value
         });

@@ -18,3 +18,8 @@ listener/tsconfig.json
 
 # lint
 tslint.json
+.eslintignore
+.eslintrc.js
+
+# gitpod
+.gitpod.yml
