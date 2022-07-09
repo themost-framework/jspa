@@ -9,6 +9,8 @@ tsconfig.json
 jsconfig.json
 listener/tsconfig.lib.json
 listener/tsconfig.json
+platform-server/tsconfig.lib.json
+platform-server/tsconfig.json
 
 # dev
 .theia
@@ -23,3 +25,6 @@ tslint.json
 
 # gitpod
 .gitpod.yml
+
+# github
+.github
