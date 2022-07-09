@@ -18,7 +18,7 @@ import { DataFieldBase } from '@themost/common';
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
 
     public imports: any[] = [];
-    protected models: Map<string, any> = new Map();
+    protected models: Map<string, DataModelProperties> = new Map();
 
     constructor(config: ConfigurationBase) {
         super(config);
@@ -37,7 +37,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
         return model;
     }
 
-    setModelDefinition(data: any): SchemaLoaderStrategy {
+    setModelDefinition(data: DataModelProperties): SchemaLoaderStrategy {
         this.models = this.models || new Map();
         this.models.set(data.name, data);
         return this;
@@ -50,6 +50,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
     readSync(): string[] {
         const models: Map<string, any> = new Map();
         for (const module of this.imports) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             Object.keys(module).forEach((member: string) => {
                 if (Object.prototype.hasOwnProperty.call(module, member)) {
                     const exportedMember = module[member];
@@ -215,7 +216,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                         }
                         // set cascade
                         if (oneToManyColumn.oneToMany.cascadeType != null) {
-                            // tslint:disable-next-line: no-bitwise
+                            // eslint-disable-next-line no-bitwise
                             if ((oneToManyColumn.oneToMany.cascadeType & CascadeType.Remove) === CascadeType.Remove) {
                                 field.mapping.cascade = 'delete';
                             }

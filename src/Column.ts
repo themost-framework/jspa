@@ -35,6 +35,7 @@ function Column(annotation?: ColumnAnnotation) {
         }, column, annotation);
         if (value.type == null) {
             // get metadata
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
             const r: { name?: string; prototype?: any } = Reflect.getMetadata('design:type', target, propertyKey);
             if (r && r.name) {
                 value.type = r.name;
