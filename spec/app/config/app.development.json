@@ -1,9 +1,4 @@
 {
     "settings": {
-        "jspa": {
-            "imports": [
-                "./models"
-            ]
-        }
     }
 }

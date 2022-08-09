@@ -1,5 +1,5 @@
 import { Basic, Column, ColumnType, Counter, Entity, FetchType, Formula, GeneratedValue, GenerationType, Id, ManyToOne } from '@themost/jspa';
-import { Account } from 'spec/models';
+import { Account } from './Account';
 import { User } from './User';
 import { Workspace } from './Workspace';
 

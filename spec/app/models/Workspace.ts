@@ -1,5 +1,5 @@
 import { Entity } from '@themost/jspa';
-import { Thing } from 'spec/models';
+import { Thing } from './Thing';
 
 @Entity()
 class Workspace extends Thing {

@@ -8,9 +8,14 @@ enum AccountType {
 
 @Entity()
 @Table({
+    indexes: [
+        {
+            columnList: [ 'name' ]
+        }
+    ],
     uniqueConstraints: [
         {
-            columnNames: ['name']
+            columnNames: [ 'name' ]
         }
     ]
 })

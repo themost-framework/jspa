@@ -1,3 +1,5 @@
+import {DataModelPrivilegeBase} from '@themost/common';
+
 declare interface EntityAnnotation {
     name?: string;
     version?: string;
