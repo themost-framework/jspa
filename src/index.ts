@@ -16,6 +16,7 @@ export * from './ManyToOne';
 export * from './ManyToMany';
 export * from './OneToMany';
 export * from './Formula';
+export * from './ColumnDefault';
 export * from './Inheritance';
 export * from './AttributeOverride'
 export * from './Embedded';
