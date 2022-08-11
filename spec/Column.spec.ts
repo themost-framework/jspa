@@ -9,7 +9,7 @@ describe('Column', () => {
         const column = target.Column.get('accountType');
         expect(column).toBeTruthy();
         expect(column.name).toBe('accountType');
-        expect(column.nullable).toBeFalse();
+        expect(column.nullable).toBeFalsy();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
         const schema: DataModelProperties = entityLoader.getModelFromEntityClass(Account);
         expect(schema).toBeTruthy();

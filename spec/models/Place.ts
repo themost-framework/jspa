@@ -1,5 +1,5 @@
 import { Basic, CascadeType, Column, Embedded, Entity, FetchType, ManyToOne, OneToMany } from '@themost/jspa';
-import { PostalAddress } from '.';
+import { PostalAddress } from './PostalAddress';
 import { Thing } from './Thing';
 
 @Entity()
@@ -37,6 +37,9 @@ class Place extends Thing {
         fetchType: FetchType.Lazy,
         mappedBy: 'containedIn'
     })
+    @Column({
+        type: 'Place'
+    })
     public containsPlace?: Place;
 
     @Basic()
@@ -45,6 +48,9 @@ class Place extends Thing {
     @ManyToOne({
         fetchType: FetchType.Lazy,
         targetEntity: 'Place'
+    })
+    @Column({
+        type: 'Place'
     })
     public containedIn?: Place;
 }

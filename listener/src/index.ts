@@ -360,14 +360,14 @@ function beforeSave(event: CallbackDataEventArgs, callback: (err?: Error) => voi
     if (event.state === 1) {
         return beforeInsert(event, callback);
     }
-    return beforeUpgrade(event, callback);
+    return beforeUpdate(event, callback);
 }
 
 function afterSave(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {
     if (event.state === 1) {
         return afterInsert(event, callback);
     }
-    return afterSave(event, callback);
+    return afterUpdate(event, callback);
 }
 
 function beforeRemove(event: CallbackDataEventArgs, callback: (err?: Error) => void): void {

@@ -15,7 +15,7 @@ describe('Persistence', () => {
         expect(annotation.Column).toBeTruthy();
         const column = annotation.Column.get('id') as IdColumnAnnotation;
         expect(column).toBeTruthy();
-        expect(column.id).toBeTrue();
+        expect(column.id).toBeTruthy();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
         const schema: DataModelProperties = entityLoader.getModelFromEntityClass(Thing);
         const field = schema.fields.find((item) => {

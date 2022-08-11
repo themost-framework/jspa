@@ -11,7 +11,7 @@ describe('OneToMany', () => {
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
         const schema = entityLoader.getModelFromEntityClass(Place);
         const field = schema.fields.find((item) => item.name === 'containsPlace');
-        expect(field.many).toBeTrue();
+        expect(field.many).toBeTruthy();
         expect(field.type).toBe('Place');
     });
 

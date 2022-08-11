@@ -25,6 +25,7 @@ module.exports = {
     ],
     "root": true,
     "rules": {
+        "@typescript-eslint/no-unsafe-call": "off",
         "@typescript-eslint/adjacent-overload-signatures": "error",
         "@typescript-eslint/array-type": [
             "error",

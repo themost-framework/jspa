@@ -3,12 +3,14 @@ import {
     DataConfigurationStrategy,
     SchemaLoaderStrategy,
     DefaultSchemaLoaderStrategy,
-    DataAdapterConfiguration
+    DataAdapterConfiguration,
+    DataCacheStrategy,
+    DefaultDataCacheStrategy
 } from '@themost/data';
 import path from 'path';
 import {Group} from './app/models';
 
-fdescribe('DataApplication', () => {
+describe('DataApplication', () => {
 
     let app: DataApplication;
     beforeAll(() => {
@@ -41,13 +43,17 @@ fdescribe('DataApplication', () => {
         app.configuration.useStrategy(DataConfigurationStrategy, DataConfigurationStrategy);
 
     });
+    afterAll(async () => {
+        const cache: DefaultDataCacheStrategy = app.configuration.getStrategy(DataCacheStrategy) as DefaultDataCacheStrategy;
+        await cache.finalize();
+    });
     it('should get model', () => {
         const dataConfigurationStrategy = app.configuration.getStrategy(DataConfigurationStrategy);
         const model = dataConfigurationStrategy.getModelDefinition('Thing');
         expect(model).toBeTruthy();
     });
 
-    fit('should create context', async () => {
+    it('should create context', async () => {
         const newContext = app.createContext();
         const Groups = newContext.model(Group);
         const items = await Groups.asQueryable().silent().getItems();
