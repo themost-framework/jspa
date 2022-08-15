@@ -1,4 +1,4 @@
-import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula, ManyToOne, FetchType } from '@themost/jspa';
+import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula, ManyToOne, FetchType, ColumnDefault } from '@themost/jspa';
 import { UserBase, ThingBase } from './interfaces';
 
 @Entity()
@@ -39,7 +39,7 @@ class Thing implements ThingBase {
         nullable: false,
         updatable: false
     })
-    @Formula(() => {
+    @ColumnDefault(() => {
         return new Date();
     })
     public dateCreated?: Date;
@@ -60,6 +60,24 @@ class Thing implements ThingBase {
     @ManyToOne({
         fetchType: FetchType.Lazy
     })
+    @Formula((event) => {
+        const context = event.context as any;
+        let user: { name?: string } =context.interactiveUser;
+        if (user && user.name) {
+            return {
+                name: user.name
+            };
+        }
+        user = context.user;
+        if (user && user.name) {
+            return {
+                name: user.name
+            };
+        }
+        return {
+            name: 'anonymous'
+        };
+    })
     public createdBy?: UserBase;
 
     @Column({
@@ -68,6 +86,24 @@ class Thing implements ThingBase {
     })
     @ManyToOne({
         fetchType: FetchType.Lazy
+    })
+    @Formula((event) => {
+        const context = event.context as any;
+        let user: { name?: string } =context.interactiveUser;
+        if (user && user.name) {
+            return {
+                name: user.name
+            };
+        }
+        user = context.user;
+        if (user && user.name) {
+            return {
+                name: user.name
+            };
+        }
+        return {
+            name: 'anonymous'
+        };
     })
     public modifiedBy?: UserBase;
 }
