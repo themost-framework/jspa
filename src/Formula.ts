@@ -13,9 +13,9 @@ declare interface FormulaColumnAnnotation extends ColumnAnnotation {
     formula?: FormulaAnnotation;
 }
 
-declare type FormulaClosure<T> = (event: FormulaArgs) => T;
+declare type FormulaClosure<T> = (event?: FormulaArgs) => Promise<T>;
 
-declare type FormulaSimpleClosure<T> = () => T;
+declare type FormulaSimpleClosure<T> = (event?: FormulaArgs) => T;
 
 function Formula<T>(closure: FormulaClosure<T> | FormulaSimpleClosure<T>) {
     return (target: any, propertyKey: string) => {

@@ -10,13 +10,10 @@ import {
     PostInitEvent
 } from '@themost/jspa';
 import { Account, AccountType } from './Account';
-import {DataModel} from '@themost/data';
 
 @Entity()
 class Group extends Account {
-    @Formula(() => {
-        return AccountType.Group;
-    })
+    @Formula(() => AccountType.Group)
     @Column({
         nullable: false,
         updatable: false

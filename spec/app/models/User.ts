@@ -21,20 +21,20 @@ class User extends Account {
     public groups?: Group[];
 
     @PostLoad()
-    onPostLoad() {
-        //
-    }
-
-    // noinspection JSUnusedLocalSymbols
-    @PreInit()
-    static onPreInit(event: PreInitEvent) {
+    async onPostLoad() {
         //
     }
 
     // noinspection JSUnusedLocalSymbols
     @PostInit()
-    static onPostInit(event: PostInitEvent) {
-        //
+    async onPostInit(event: PostInitEvent) {
+        await event.model.silent().save([
+            {
+                name: 'anonymous',
+                alternateName: 'anonymous',
+                accountType: AccountType.User
+            }
+        ]);
     }
 
 }

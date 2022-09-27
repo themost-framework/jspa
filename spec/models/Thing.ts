@@ -1,4 +1,4 @@
-import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula, ManyToOne, FetchType } from '@themost/jspa';
+import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula, ManyToOne, FetchType, ColumnDefault } from '@themost/jspa';
 import { UserBase } from './UserBase';
 
 @Entity()
@@ -39,8 +39,8 @@ class Thing {
         nullable: false,
         updatable: false
     })
-    @Formula(() => {
-        return new Date();
+    @ColumnDefault(() => {
+        return Promise.resolve(new Date());
     })
     public dateCreated?: Date;
 
@@ -48,7 +48,7 @@ class Thing {
         nullable: false
     })
     @Formula(() => {
-        return new Date();
+        return Promise.resolve(new Date());
     })
     public dateModified?: Date;
 

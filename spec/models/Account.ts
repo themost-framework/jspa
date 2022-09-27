@@ -1,4 +1,4 @@
-import {  Column, Entity, Table } from '@themost/jspa';
+import {  Column, ColumnDefault, Entity, Formula, Table } from '@themost/jspa';
 import { Thing } from './Thing';
 
 enum AccountType {
@@ -18,6 +18,9 @@ class Account extends Thing {
     @Column({
         nullable: false,
         type: 'Integer'
+    })
+    @Formula(() => {
+        return Promise.resolve(AccountType.Group);
     })
     public accountType?: AccountType;
     @Column({

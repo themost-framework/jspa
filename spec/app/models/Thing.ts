@@ -39,21 +39,17 @@ class Thing implements ThingBase {
         nullable: false,
         updatable: false
     })
-    @ColumnDefault(() => {
-        return new Date();
-    })
+    @ColumnDefault(() => new Date())
     public dateCreated?: Date;
 
     @Column({
         nullable: false
     })
-    @Formula(() => {
-        return new Date();
-    })
+    @Formula(() => new Date())
     public dateModified?: Date;
 
     @Column({
-        nullable: false,
+        nullable: true,
         updatable: false,
         type: 'User'
     })
@@ -74,14 +70,12 @@ class Thing implements ThingBase {
                 name: user.name
             };
         }
-        return {
-            name: 'anonymous'
-        };
+        return null;
     })
     public createdBy?: UserBase;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: 'User'
     })
     @ManyToOne({
@@ -101,9 +95,7 @@ class Thing implements ThingBase {
                 name: user.name
             };
         }
-        return {
-            name: 'anonymous'
-        };
+        return null;
     })
     public modifiedBy?: UserBase;
 }
