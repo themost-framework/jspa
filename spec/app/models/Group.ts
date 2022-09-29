@@ -33,6 +33,10 @@ class Group extends Account {
     // noinspection JSUnusedLocalSymbols
     @PostInit()
     async onPostInit(event: PostInitEvent) {
+        const count = await event.model.asQueryable().silent().count();
+        if (count) {
+            return;
+        }
         await event.model.silent().save([
             {
                 name: 'Administrators',

@@ -1,6 +1,5 @@
-import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostInit, PostInitEvent, PostLoad, PreInit, PreInitEvent } from '@themost/jspa';
+import { CascadeType, Column, Entity, EntityListeners, FetchType, Formula, ManyToMany, PostInit, PostInitEvent, PostLoad, PreInit, PreInitEvent } from '@themost/jspa';
 import { Account, AccountType } from './Account';
-import { Group } from './Group';
 
 @Entity()
 @EntityListeners()
@@ -8,8 +7,9 @@ class User extends Account {
     @Column({
         nullable: false,
         updatable: false,
-        insertable: false
+        insertable: true
     })
+    @Formula(() => AccountType.User)
     public accountType?: AccountType = AccountType.User;
 
     @ManyToMany({
@@ -18,7 +18,7 @@ class User extends Account {
         fetchType: FetchType.Lazy,
         mappedBy: 'members'
     })
-    public groups?: Group[];
+    public groups?: Account[];
 
     @PostLoad()
     async onPostLoad() {
@@ -28,11 +28,20 @@ class User extends Account {
     // noinspection JSUnusedLocalSymbols
     @PostInit()
     async onPostInit(event: PostInitEvent) {
+        const count = await event.model.asQueryable().silent().count();
+        if (count) {
+            return;
+        }
         await event.model.silent().save([
             {
                 name: 'anonymous',
                 alternateName: 'anonymous',
-                accountType: AccountType.User
+                accountType: AccountType.User,
+                groups: [
+                    {
+                        name: 'Guests'
+                    }
+                ]
             }
         ]);
     }

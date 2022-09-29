@@ -38,9 +38,6 @@ function GeneratedValue(annotation?: GeneratedValueAnnotation) {
             nullable: false,
             updatable: false
         } as GeneratedValueColumnAnnotation);
-        if (value.strategy === GenerationType.Identity) {
-            column.insertable = false;
-        }
         // finally, reset column annotation
         columns.Column.set(propertyKey, column);
       };

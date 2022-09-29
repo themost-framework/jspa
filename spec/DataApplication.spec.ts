@@ -8,7 +8,7 @@ import {
     DefaultDataCacheStrategy
 } from '@themost/data';
 import path from 'path';
-import {Group} from './app/models';
+import {Group, User} from './app/models';
 
 describe('DataApplication', () => {
 
@@ -56,8 +56,26 @@ describe('DataApplication', () => {
     it('should create context', async () => {
         const newContext = app.createContext();
         const Groups = newContext.model(Group);
-        const items = await Groups.asQueryable().silent().getItems();
+        const items = await Groups.asQueryable().silent().getTypedItems();
         expect(items).toBeTruthy();
+    });
+
+    fit('should seed data', async () => {
+        const newContext = app.createContext();
+        const Users = newContext.model(User);
+        await Users.silent().save({
+            name: 'admin',
+            alternateName: 'admin',
+            accountType: 0,
+            groups: [
+                {
+                    name: 'Administrators'
+                }
+            ]
+        });
+        const user = await Users.where('name').equal('admin').expand('groups').silent().getTypedItem();
+        expect(user).toBeTruthy();
+        expect(user.name).toEqual('admin');
     });
 
 });

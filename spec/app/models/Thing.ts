@@ -1,9 +1,15 @@
+import { DataObject } from '@themost/data';
 import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula, ManyToOne, FetchType, ColumnDefault } from '@themost/jspa';
 import { UserBase, ThingBase } from './interfaces';
 
 @Entity()
 @Table()
-class Thing implements ThingBase {
+class Thing extends DataObject implements ThingBase {
+
+    constructor() {
+        super();
+    }
+
     @Id()
     @Column()
     @GeneratedValue({
