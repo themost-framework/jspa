@@ -2,9 +2,10 @@ import { CascadeType } from './CascadeType';
 import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
 import { EntityNotFoundException } from './Errors';
+import { Permission, PermissionAnnotation } from './Permission';
 declare type AnyConstructor<T> = new(...args: any[]) => T;
 
-declare interface ManyToManyAnnotation {
+declare interface ManyToManyAnnotation extends PermissionAnnotation {
     cascadeType?: CascadeType;
     fetchType?: FetchType;
     // tslint:disable-next-line: ban-types
@@ -53,6 +54,7 @@ function ManyToMany(annotation?: ManyToManyAnnotation) {
         if (targetEntity == null) {
             throw new EntityNotFoundException();
         }
+        Permission(annotation.privileges);
         // set value property
         Object.assign(column, {
             manyToMany: value,

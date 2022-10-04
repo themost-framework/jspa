@@ -1,8 +1,9 @@
 import { CascadeType } from './CascadeType';
 import { Column, ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
+import { Permission, PermissionAnnotation } from './Permission';
 
-declare interface OneToManyAnnotation {
+declare interface OneToManyAnnotation extends PermissionAnnotation {
     cascadeType?: CascadeType;
     fetchType?: FetchType;
     optional?: boolean;
@@ -34,6 +35,7 @@ function OneToMany(annotation: OneToManyAnnotation) {
             Column()(target, propertyKey);
             column = columns.Column.get(propertyKey);
         }
+        Permission(annotation.privileges);
         // set value property
         Object.assign(column, {
             oneToMany

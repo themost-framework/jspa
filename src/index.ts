@@ -3,6 +3,7 @@ export * from './Errors';
 export * from './ColumnType';
 export * from './EntityLoaderStrategy';
 export * from './InheritanceType';
+export * from './Permission';
 export * from './Entity';
 export * from './Table';
 export * from './Column';

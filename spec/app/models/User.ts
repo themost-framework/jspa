@@ -1,4 +1,4 @@
-import { CascadeType, Column, Entity, EntityListeners, FetchType, Formula, ManyToMany, PostInit, PostInitEvent, PostLoad, PreInit, PreInitEvent } from '@themost/jspa';
+import { CascadeType, Column, Entity, EntityListeners, FetchType, Formula, ManyToMany, PostInit, PostInitEvent, PostLoad } from '@themost/jspa';
 import { Account, AccountType } from './Account';
 
 @Entity()
