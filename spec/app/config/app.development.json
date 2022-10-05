@@ -1,4 +1,7 @@
 {
     "settings": {
+        "auth": {
+            "unattendedExecutionAccount": "f5qYocTqTSar"
+        }
     }
 }

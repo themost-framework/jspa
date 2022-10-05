@@ -1,51 +1,17 @@
 import {
-    DataApplication,
-    DataConfigurationStrategy,
-    SchemaLoaderStrategy,
-    DefaultSchemaLoaderStrategy,
-    DataAdapterConfiguration,
-    DataCacheStrategy,
-    DefaultDataCacheStrategy
+    DataConfigurationStrategy
 } from '@themost/data';
-import path from 'path';
+import { Application1 } from './app/app';
 import {Group, User} from './app/models';
 
 describe('DataApplication', () => {
 
-    let app: DataApplication;
+    let app: Application1;
     beforeAll(() => {
-        app = new DataApplication(path.resolve(__dirname, 'app'));
-        app.configuration.setSourceAt('settings/jspa/imports', [
-            path.resolve('./spec/app/models/index')
-        ]);
-        app.configuration.setSourceAt('settings/schema/loaders', [
-            {
-                loaderType: '@themost/jspa/platform-server#DefaultEntityLoaderStrategy'
-            }
-        ]);
-        app.configuration.setSourceAt('adapterTypes', [
-            {
-                name: 'Test Adapter',
-                invariantName: 'memory',
-                type: path.resolve(__dirname, 'adapter/TestAdapter')
-            }
-        ]);
-        app.configuration.setSourceAt('adapters', [
-            {
-                name: 'test',
-                default: true,
-                invariantName: 'memory'
-            } as DataAdapterConfiguration
-        ]);
-        // reload schema
-        app.configuration.useStrategy(SchemaLoaderStrategy, DefaultSchemaLoaderStrategy);
-        // reload configuration
-        app.configuration.useStrategy(DataConfigurationStrategy, DataConfigurationStrategy);
-
+        app = new Application1();
     });
     afterAll(async () => {
-        const cache: DefaultDataCacheStrategy = app.configuration.getStrategy(DataCacheStrategy) as DefaultDataCacheStrategy;
-        await cache.finalize();
+        await app.finalize();
     });
     it('should get model', () => {
         const dataConfigurationStrategy = app.configuration.getStrategy(DataConfigurationStrategy);
@@ -60,7 +26,7 @@ describe('DataApplication', () => {
         expect(items).toBeTruthy();
     });
 
-    fit('should seed data', async () => {
+    it('should seed data', async () => {
         const newContext = app.createContext();
         const Users = newContext.model(User);
         await Users.silent().save({
@@ -72,10 +38,13 @@ describe('DataApplication', () => {
                     name: 'Administrators'
                 }
             ]
-        });
-        const user = await Users.where('name').equal('admin').expand('groups').silent().getTypedItem();
+        } as User);
+        const user: User = await Users.where('name').equal('admin').expand('groups').silent().getTypedItem();
         expect(user).toBeTruthy();
         expect(user.name).toEqual('admin');
+        expect(user.groups).toBeInstanceOf(Array);
+        expect(user.groups.length).toEqual(1);
+        expect(user.groups[0].name).toEqual('Administrators');
     });
 
 });

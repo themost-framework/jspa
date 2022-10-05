@@ -104,6 +104,9 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 }
             ]
         }
+        if (entityType.Entity && entityType.Entity.privileges && entityType.Entity.privileges.length > 0) {
+            result.privileges = entityType.Entity.privileges;
+        }
         // set inherits
         if (entityClass.__proto__) {
             const inheritedModel = this.getModelFromEntityClass(entityClass.__proto__);
@@ -201,6 +204,9 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                                     field.mapping.associationValueField = inverseJoinColumn.name;
                                 }
                             }
+                            if (Array.isArray(manyToManyColumn.manyToMany.privileges)) {
+                                field.mapping.privileges = manyToManyColumn.manyToMany.privileges;
+                            }
                         }
                     }
                     const oneToManyColumn = column as OneToManyColumnAnnotation;
@@ -220,6 +226,9 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                             if ((oneToManyColumn.oneToMany.cascadeType & CascadeType.Remove) === CascadeType.Remove) {
                                 field.mapping.cascade = 'delete';
                             }
+                        }
+                        if (Array.isArray(oneToManyColumn.oneToMany.privileges)) {
+                            field.mapping.privileges = oneToManyColumn.oneToMany.privileges;
                         }
                     }
                     result.fields.push(field);
