@@ -1,9 +1,15 @@
+import { DataObject } from '@themost/data';
 import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula, ManyToOne, FetchType, ColumnDefault } from '@themost/jspa';
 import { UserBase, ThingBase } from './interfaces';
 
 @Entity()
 @Table()
-class Thing implements ThingBase {
+class Thing extends DataObject implements ThingBase {
+
+    constructor() {
+        super();
+    }
+
     @Id()
     @Column()
     @GeneratedValue({
@@ -39,21 +45,17 @@ class Thing implements ThingBase {
         nullable: false,
         updatable: false
     })
-    @ColumnDefault(() => {
-        return new Date();
-    })
+    @ColumnDefault(() => new Date())
     public dateCreated?: Date;
 
     @Column({
         nullable: false
     })
-    @Formula(() => {
-        return new Date();
-    })
+    @Formula(() => new Date())
     public dateModified?: Date;
 
     @Column({
-        nullable: false,
+        nullable: true,
         updatable: false,
         type: 'User'
     })
@@ -74,14 +76,12 @@ class Thing implements ThingBase {
                 name: user.name
             };
         }
-        return {
-            name: 'anonymous'
-        };
+        return null;
     })
     public createdBy?: UserBase;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: 'User'
     })
     @ManyToOne({
@@ -101,9 +101,7 @@ class Thing implements ThingBase {
                 name: user.name
             };
         }
-        return {
-            name: 'anonymous'
-        };
+        return null;
     })
     public modifiedBy?: UserBase;
 }

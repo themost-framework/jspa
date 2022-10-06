@@ -1,17 +1,23 @@
-import { DataContextBase } from '@themost/common';
+import { DataContextBase, DataModelBase } from '@themost/common';
 import { EntityColumnAnnotation, ColumnAnnotation } from './Column';
 
+declare interface ColumnDefaultArgs {
+    context: DataContextBase,
+    model: DataModelBase,
+    target: any
+}
+
 declare interface ColumnDefaultAnnotation {
-    closure: (context: DataContextBase) => any;
+    closure: (event: ColumnDefaultArgs) => any;
 }
 
 declare interface ColumnDefaultValueAnnotation extends ColumnAnnotation {
     columnDefault?: ColumnDefaultAnnotation;
 }
 
-declare type ColumnDefaultClosure<T> = (context: DataContextBase) => T;
+declare type ColumnDefaultClosure<T> = (event?: ColumnDefaultArgs) => Promise<T>;
 
-declare type ColumnDefaultSimpleClosure<T> = () => T;
+declare type ColumnDefaultSimpleClosure<T> = (event?: ColumnDefaultArgs) => T;
 
 function ColumnDefault<T>(closure: ColumnDefaultClosure<T> | ColumnDefaultSimpleClosure<T>) {
     return (target: any, propertyKey: string) => {
@@ -40,6 +46,7 @@ function ColumnDefault<T>(closure: ColumnDefaultClosure<T> | ColumnDefaultSimple
 }
 
 export {
+    ColumnDefaultArgs,
     ColumnDefaultClosure,
     ColumnDefaultSimpleClosure,
     ColumnDefaultAnnotation,

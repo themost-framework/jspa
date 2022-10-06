@@ -1,10 +1,11 @@
 import { CascadeType } from './CascadeType';
 import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
+import { Permission, PermissionAnnotation } from './Permission';
 
 declare type AnyConstructor<T> = new(...args: any[]) => T;
 
-declare interface ManyToOneAnnotation {
+declare interface ManyToOneAnnotation extends PermissionAnnotation {
     cascadeType?: CascadeType;
     fetchType?: FetchType;
     optional?: boolean;
@@ -28,6 +29,7 @@ function ManyToOne(annotation?: ManyToOneAnnotation) {
             fetchType: FetchType.Eager,
             optional: true
         } as ManyToOneAnnotation, annotation);
+        Permission(annotation.privileges);
         // get column
         let column = columns.Column.get(propertyKey);
         if (column == null) {

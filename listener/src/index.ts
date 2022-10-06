@@ -5,6 +5,8 @@ import { PreInit, PostInit, EntityListenerCollectionAnnotation,
     PreRemove, PreRemoveEvent, PostRemoveEvent, PostRemove,
     PreInitEvent, PostInitEvent, PreUpdate, PreUpdateEvent,
     PostUpdate, PostUpdateEvent, PostPersistEvent, PrePersistEvent, PrePersist, PostPersist } from '@themost/jspa';
+import { setAttributeDefault } from './setAttributeDefault';
+import { calculateAttributeValue } from './calculateAttributeValue';
 
 declare interface CallbackDataEventArgs {
     model: DataModelBase;
@@ -217,6 +219,11 @@ function beforeUpdate(event: CallbackDataEventArgs, callback: (err?: Error) => v
         });
     });
     const ownCallbacks = inspectCallbackOfType(PreUpdate, EntityClass);
+
+    ownCallbacks.unshift({
+        callback: calculateAttributeValue
+    });
+
     ownCallbacks.forEach((listenerCallback: { callback: (arg: PreUpdateEvent) => Promise<void> }) => {
         eventEmitter.on('before.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -284,19 +291,30 @@ function beforeInsert(event: CallbackDataEventArgs, callback: (err?: Error) => v
     const eventEmitter = new SequentialEventEmitter();
     listenerCallbacks.forEach((listenerCallback: { callback: (arg: PrePersistEvent) => Promise<void> }) => {
         eventEmitter.on('before.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
-            listenerCallback.callback({
-                context: innerEvent.model.context,
-                target: innerEvent.target,
-                model: innerEvent.model,
-                entityClass: EntityClass
-            } as PrePersistEvent).then(() => {
-                return innerCallback();
-            }).catch((error: Error) => {
-                return innerCallback(error);
-            });
+            try {
+                listenerCallback.callback({
+                    context: innerEvent.model.context,
+                    target: innerEvent.target,
+                    model: innerEvent.model,
+                    entityClass: EntityClass
+                } as PrePersistEvent).then(() => {
+                    return innerCallback();
+                }).catch((error: Error) => {
+                    return innerCallback(error);
+                });
+            } catch (err) {
+                return innerCallback(err as Error);
+            }
         });
     });
     const ownCallbacks = inspectCallbackOfType(PrePersist, EntityClass);
+
+    ownCallbacks.unshift({
+        callback: setAttributeDefault
+    }, {
+        callback: calculateAttributeValue
+    });
+
     ownCallbacks.forEach((listenerCallback: { callback: (arg: PrePersistEvent) => Promise<void> }) => {
         eventEmitter.on('before.save', (innerEvent: CallbackDataEventArgs, innerCallback: (err?: Error) => void) => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call

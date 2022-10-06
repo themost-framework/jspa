@@ -1,6 +1,6 @@
-import {DataModelPrivilegeBase} from '@themost/common';
+import { Permission, PermissionAnnotation } from './Permission';
 
-declare interface EntityAnnotation {
+declare interface EntityAnnotation extends PermissionAnnotation {
     name?: string;
     version?: string;
 }
@@ -18,6 +18,7 @@ function Entity(annotation?: EntityAnnotation) {
             name: target.name,
             version: '1.0.0'
         }, annotation);
+        Permission(annotation && annotation.privileges);
     };
 }
 

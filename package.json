@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "scripts": {
-    "test": "jasmine",
+    "test": "nyc jasmine",
     "clean": "rimraf dist && rimraf listener/dist",
     "build": "npm run clean && rollup --config rollup.config.js",
     "install-peers": "add-peers"
@@ -28,10 +28,10 @@
   },
   "homepage": "https://github.com/themost-framework/jspa#readme",
   "peerDependencies": {
-    "@themost/common": "latest",
-    "@themost/data": "next",
-    "@themost/query": "next",
-    "@themost/xml": "latest"
+    "@themost/common": "^2",
+    "@themost/data": "^2",
+    "@themost/query": "^2",
+    "@themost/xml": "^2"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.3.0",
@@ -51,6 +51,7 @@
     "jasmine": "^3.10.0",
     "jasmine-spec-reporter": "^7.0.0",
     "module-alias": "^2.2.2",
+    "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.59.0",
     "sql.js": "^1.6.2",

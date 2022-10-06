@@ -25,7 +25,7 @@ function EntityListeners(...value: EntityListenerConstructor<any>[]) {
             });
         }
         const entityClass: EntityListenerCollectionAnnotation = target as EntityListenerCollectionAnnotation;
-        entityClass.EntityListeners.push.apply(entityClass.EntityListeners, value);
+        entityClass.EntityListeners.push(...value);
     };
 }
 
