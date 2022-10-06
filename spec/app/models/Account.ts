@@ -1,4 +1,4 @@
-import {  Column, Entity, Formula, Table } from '@themost/jspa';
+import {  Column, Entity, Table } from '@themost/jspa';
 import { Thing } from './Thing';
 
 enum AccountType {
