@@ -183,14 +183,22 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                         if (manyToManyColumn.manyToMany.fetchType === FetchType.Eager) {
                             field.expandable = true;
                         }
+                        if (manyToManyColumn.manyToMany.mappedBy != null) {
+                            field.mapping = {
+                                associationType: 'junction'
+                            };
+                            // todo: add parentModel, parentField, childModel, childField
+                            Object.assign(field.mapping, {
+                                parentModel: manyToManyColumn.manyToMany.targetEntity,
+                                childModel: entityType.Entity.name,
+                                refersTo: manyToManyColumn.manyToMany.mappedBy
+                            });
+                        }
                         const joinTableColumn = column as JoinTableColumnAnnotation;
                         if (joinTableColumn.joinTable) {
                             field.mapping = {
                                 associationType: 'junction',
                                 associationAdapter: joinTableColumn.joinTable.name
-                            }
-                            if (manyToManyColumn.manyToMany.mappedBy === null) {
-                                // todo: add parentModel, parentField, childModel, childField
                             }
                             if (Array.isArray(joinTableColumn.joinTable.joinColumns)) {
                                 const joinColumn = joinTableColumn.joinTable.joinColumns[0];
