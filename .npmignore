@@ -4,6 +4,8 @@ src/*.spec.ts
 tsconfig.spec.json
 .nycrc.json
 .nyc_output/
+.jest.setup.js
+.jest.config.js
 
 # build
 rollup.config.js
