@@ -1,7 +1,0 @@
-{
-    "include": [
-        "src",
-        "listener/src",
-        "platform-server/src"
-    ]
-}
