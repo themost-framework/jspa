@@ -110,3 +110,6 @@ typings/
 .vscode
 .idea
 .DS_Store
+
+# test
+.module-aliases.json

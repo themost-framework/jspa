@@ -180,26 +180,27 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     if (manyToManyColumn.manyToMany) {
                         field.many = true;
                         field.nullable = true;
+                        field.mapping = {
+                            associationType: 'junction'
+                        };
                         if (manyToManyColumn.manyToMany.fetchType === FetchType.Eager) {
                             field.expandable = true;
                         }
+                        Object.assign(field.mapping, {
+                            parentModel: manyToManyColumn.manyToMany.targetEntity,
+                            childModel: entityType.Entity.name
+                        });
                         if (manyToManyColumn.manyToMany.mappedBy != null) {
-                            field.mapping = {
-                                associationType: 'junction'
-                            };
                             // todo: add parentModel, parentField, childModel, childField
                             Object.assign(field.mapping, {
-                                parentModel: manyToManyColumn.manyToMany.targetEntity,
-                                childModel: entityType.Entity.name,
-                                refersTo: manyToManyColumn.manyToMany.mappedBy
+                                mappedBy: manyToManyColumn.manyToMany.mappedBy
                             });
                         }
                         const joinTableColumn = column as JoinTableColumnAnnotation;
                         if (joinTableColumn.joinTable) {
-                            field.mapping = {
-                                associationType: 'junction',
+                            Object.assign(field.mapping, {
                                 associationAdapter: joinTableColumn.joinTable.name
-                            }
+                            });
                             if (Array.isArray(joinTableColumn.joinTable.joinColumns)) {
                                 const joinColumn = joinTableColumn.joinTable.joinColumns[0];
                                 if (joinColumn) {

@@ -26,7 +26,7 @@ describe('DataApplication', () => {
         expect(items).toBeTruthy();
     });
 
-    it('should seed data', async () => {
+    fit('should seed data', async () => {
         const newContext = app.createContext();
         const Users = newContext.model(User);
         await Users.silent().save({
