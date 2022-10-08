@@ -1,4 +1,4 @@
-import { CascadeType, Column, Entity, EntityListeners, FetchType, ManyToMany, PostInit, PostInitEvent, PostLoad, PreInit, PreInitEvent } from '@themost/jspa';
+import { CascadeType, Column, Entity, EntityListeners, FetchType, JoinTable, ManyToMany, PostInit, PostInitEvent, PostLoad, PreInit, PreInitEvent } from '@themost/jspa';
 import { Account, AccountType } from './Account';
 import { Group } from './Group';
 import { OnUserInitListener } from './OnUserInitListener';
@@ -18,8 +18,22 @@ class User extends Account {
     @ManyToMany({
         targetEntity: 'Group',
         cascadeType: CascadeType.Detach,
-        fetchType: FetchType.Lazy,
-        mappedBy: 'members'
+        fetchType: FetchType.Lazy
+    })
+    @JoinTable({
+        name: 'GroupMembers',
+        joinColumns: [
+            {
+                name: 'object',
+                referencedColumnName: 'id'
+            }
+        ],
+        inverseJoinColumns: [
+            {
+                name: 'value',
+                referencedColumnName: 'id'
+            }
+        ]
     })
     public groups?: Group[];
 

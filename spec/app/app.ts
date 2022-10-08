@@ -1,3 +1,4 @@
+import { ModuleLoaderStrategy } from '@themost/common';
 import { DataAdapterConfiguration, DataApplication, DataConfigurationStrategy, DataCacheStrategy, DefaultDataCacheStrategy, DefaultSchemaLoaderStrategy, SchemaLoaderStrategy } from '@themost/data';
 import path from 'path';
 
@@ -30,6 +31,10 @@ class Application1 extends DataApplication {
         this.configuration.useStrategy(SchemaLoaderStrategy, DefaultSchemaLoaderStrategy);
         // reload configuration
         this.configuration.useStrategy(DataConfigurationStrategy, DataConfigurationStrategy);
+        // reload configuration
+        this.configuration.useStrategy(ModuleLoaderStrategy, function NodeModuleLoader() {
+            this.require = (id: string) => require(id)
+        });
     }
 
     async finalize() {

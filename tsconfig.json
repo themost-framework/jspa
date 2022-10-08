@@ -17,14 +17,14 @@
             "ES2017"
         ],
         "paths": {
-            "@themost/jspa": [
-                "./src/index"
-            ],
             "@themost/jspa/listener": [
                 "./listener/src/index"
             ],
             "@themost/jspa/platform-server": [
                 "./platform-server/src/index"
+            ],
+            "@themost/jspa": [
+                "./src/index"
             ]
         }
     },

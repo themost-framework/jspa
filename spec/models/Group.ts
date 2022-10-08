@@ -16,7 +16,19 @@ class Group extends Account {
         cascadeType: CascadeType.Detach
     })
     @JoinTable({
-        name: 'GroupMembers'
+        name: 'GroupMembers',
+        joinColumns: [
+            {
+                name: 'object',
+                referencedColumnName: 'id'
+            }
+        ],
+        inverseJoinColumns: [
+            {
+                name: 'value',
+                referencedColumnName: 'id'
+            }
+        ]
     })
     public members?: Account[];
 }

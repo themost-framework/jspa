@@ -28,6 +28,21 @@ class Group extends Account {
     @JoinTable({
         name: 'GroupMembers'
     })
+    @JoinTable({
+        name: 'GroupMembers',
+        joinColumns: [
+            {
+                name: 'object',
+                referencedColumnName: 'id'
+            }
+        ],
+        inverseJoinColumns: [
+            {
+                name: 'value',
+                referencedColumnName: 'id'
+            }
+        ]
+    })
     public members?: Account[];
 
     // noinspection JSUnusedLocalSymbols
