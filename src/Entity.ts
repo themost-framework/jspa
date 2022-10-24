@@ -3,6 +3,7 @@ import { Permission, PermissionAnnotation } from './Permission';
 declare interface EntityAnnotation extends PermissionAnnotation {
     name?: string;
     version?: string;
+    abstract?: boolean;
 }
 
 declare type EntityConstructor<T> = new(...args: any[]) => T;
