@@ -4,6 +4,14 @@ declare interface PermissionAnnotation {
     privileges?: DataModelPrivilegeBase[];
 }
 
+export enum PrivilegeMask {
+    Read = 1,
+    Create = 2,
+    Update = 4,
+    Delete = 8,
+    Execute = 16,
+    Full = 31
+}
 
 function Permission(items?: DataModelPrivilegeBase[]) {
     return (target: any) => {
@@ -13,7 +21,7 @@ function Permission(items?: DataModelPrivilegeBase[]) {
         } else {
             targetItem.privileges = [
                 {
-                    mask: 15,
+                    mask: PrivilegeMask.Full,
                     type: 'global'
                 }
             ];
