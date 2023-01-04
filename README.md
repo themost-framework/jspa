@@ -343,8 +343,132 @@ The available generation strategies are:
 
 - `FormulaArgs.context` The current data context
 
-- `Formula.model` The current data model
+- `Formula.model` An instance of `DataModel` class which represents the current entity type
 
 - `Formula.target` The current object
 
+### @ColumnDefault
 
+`@ColumnDefault` annotation defines the default value of the mapped column
+
+    @Entity()
+    @Table()
+    class Thing extends DataObject {
+        ...
+        @ColumnDefault(() => new Date())
+        public dateCreated?: Date;
+    }
+
+`@ColumnDefault` can be a simple closure which returns a single value or a closure which has `event` parameter of type `ColumnDefaultArgs`
+
+- `ColumnDefaultArgs.context` The current data context
+
+- `ColumnDefaultArgs.model` An instance of `DataModel` class which represents the current entity type
+
+- `ColumnDefaultArgs.target` The current object
+
+### @Embedded
+
+`@Embedded` annotation is used to embed type into another type. An embedded type will be inserted, updated or deleted as result of an operation made on parent object.
+
+    @Entity()
+    class Place extends Thing {
+        ...
+        @Embedded()
+        public address?: PostalAddress;
+    }
+
+e.g. `Place` entity type embeds `PostalAddress` into `address` property.
+
+### @ManyToOne
+
+`@ManyToOne` annotation defined a foreign-key association between two entity types
+
+    @Entity()
+    class Party extends Thing {
+
+        ...
+        @Column({
+            nullable: false,
+            updatable: false,
+            type: 'User'
+        })
+        @ManyToOne({
+            fetchType: FetchType.Lazy
+        })
+        public createdBy?: User;
+    }
+
+
+e.g. `Party.createdBy` defines a foreign-key association between `Party` and `User`
+
+- `@ManyToOne.optional` A boolean which whether the association is optional or not.
+- `@ManyToOne.fetchType` Defines that data can be lazily or eagerly fetched
+
+### @OneToMany
+
+`@OneToMany` annotation is used to implement one-to-many relationship between two entity types.
+
+    @Entity()
+    class Place extends Thing {
+
+        ...
+        @OneToMany({
+            cascadeType: CascadeType.Detach,
+            fetchType: FetchType.Lazy,
+            mappedBy: 'containedIn',
+            targetEntity: 'Place'
+        })
+        public containsPlace?: Place;
+
+    }
+
+e.g. `Place` has a collection of places based on property `containedIn`
+
+`@OneToMany` annotation has the following properties
+
+- `@ManyToOne.fetchType` Defines that data can be lazily or eagerly fetched
+- `@ManyToOne.cascadeType` Defines the cascade operation that will be used while removing an object.
+- `@ManyToOne.mappedBy` The target column that holds the association between the current entity type and the target entity type.
+- `@ManyToOne.targetEntity` The type of the target entity
+
+### @ManyToMany
+
+`@OneToMany` annotation is used to implement many-to-many relationship between two entity types.
+
+    class Group extends Account {
+        ...
+        @ManyToMany({
+            targetEntity: 'Account',
+            fetchType: FetchType.Lazy,
+            cascadeType: CascadeType.Detach
+        })
+        @JoinTable({
+            name: 'GroupMembers',
+            joinColumns: [
+                {
+                    name: 'object',
+                    referencedColumnName: 'id'
+                }
+            ],
+            inverseJoinColumns: [
+                {
+                    name: 'value',
+                    referencedColumnName: 'id'
+                }
+            ]
+        })
+        public members?: Account[];
+        ...
+    }
+e.g. Every `Group` has a collection of `members` of type `Account`
+
+`@OneToMany` annotation has the following properties
+
+- `@ManyToOne.fetchType` Defines that data can be lazily or eagerly fetched
+- `@ManyToOne.cascadeType` Defines the cascade operation that will be used while removing an object.
+- `@ManyToOne.targetEntity` The type of the target entity
+
+The `@JoinTable` annotation is being used to define the database object where this relationship will be stored. `@JoinTable.joinColumns` contains the local property and `@JoinTable.inverseJoinColumns` contains the foreign property.
+
+e.g. `Group.members` many-to-many association will be stored in `GroupMembers` table where `GroupMembers.object` column will be a `Group.id` and `GroupMembers.value` column will be an `Account.id`.
