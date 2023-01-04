@@ -1,10 +1,9 @@
 import { DataObject } from '@themost/data';
 import { Column, Entity, GeneratedValue, GenerationType, Id, Table, Counter, Basic, Formula, ManyToOne, FetchType, ColumnDefault } from '@themost/jspa';
-import { UserBase, ThingBase } from './interfaces';
 
 @Entity()
 @Table()
-class Thing extends DataObject implements ThingBase {
+class Thing extends DataObject {
 
     constructor() {
         super();
@@ -78,7 +77,7 @@ class Thing extends DataObject implements ThingBase {
         }
         return null;
     })
-    public createdBy?: UserBase;
+    public createdBy?: any;
 
     @Column({
         nullable: true,
@@ -103,7 +102,7 @@ class Thing extends DataObject implements ThingBase {
         }
         return null;
     })
-    public modifiedBy?: UserBase;
+    public modifiedBy?: any;
 }
 
 export {
