@@ -120,8 +120,11 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 }
             }
         }
-        const embeddableEntity = entityClass as EmbeddableEntityAnnotation;
+        const embeddableEntity = entityType.Entity as EmbeddableEntityAnnotation;
         if (embeddableEntity.embeddable) {
+            result.hidden = true;
+        }
+        if (entityType.Entity.abstract) {
             result.hidden = true;
         }
         // get table annotation
