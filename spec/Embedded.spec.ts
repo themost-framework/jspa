@@ -1,5 +1,5 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, EmbeddedEntityAnnotation, EmbeddableEntityAnnotation } from '@themost/jspa';
+import { EntityColumnAnnotation, EntityLoaderStrategy, EmbeddedEntityAnnotation, EmbeddableEntityAnnotation, EmbeddableEntityTypeAnnotation } from '@themost/jspa';
 import { PostalAddress } from './models';
 import { Party } from './models';
 
@@ -21,9 +21,9 @@ describe('Embedded', () => {
     });
 
     it('should use @Embeddable', () => {
-        const target: EmbeddableEntityAnnotation = PostalAddress as EmbeddableEntityAnnotation;
+        const target = PostalAddress as EmbeddableEntityTypeAnnotation;
         expect(target).toBeTruthy();
-        expect(target.embeddable).toBeTruthy();
+        expect(target.Entity.embeddable).toBeTruthy();
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
         const schema: DataModelProperties = entityLoader.getModelFromEntityClass(PostalAddress);
         expect(schema).toBeTruthy();
