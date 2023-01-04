@@ -1,11 +1,11 @@
 import { ColumnAnnotation, Column, EntityColumnAnnotation } from './Column';
-import { Entity } from './Entity';
+import { Entity, EntityAnnotation } from './Entity';
 
 declare interface EmbeddedEntityAnnotation extends ColumnAnnotation {
     embedded?: boolean;
 }
 
-declare interface EmbeddableEntityAnnotation extends ColumnAnnotation {
+declare interface EmbeddableEntityAnnotation extends EntityAnnotation {
     embeddable?: boolean;
 }
 
@@ -25,11 +25,9 @@ function Embedded() {
 
 function Embeddable() {
     return (target: any) => {
-        Entity()(target);
-        const entity: EmbeddableEntityAnnotation = target as EmbeddableEntityAnnotation;
-        Object.assign(entity, {
+        Entity({
             embeddable: true
-        } as EmbeddableEntityAnnotation);
+        } as EmbeddableEntityAnnotation)(target);
     };
 }
 
