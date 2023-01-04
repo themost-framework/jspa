@@ -33,6 +33,7 @@ class Application1 extends DataApplication {
         this.configuration.useStrategy(DataConfigurationStrategy, DataConfigurationStrategy);
         // reload configuration
         this.configuration.useStrategy(ModuleLoaderStrategy, function NodeModuleLoader() {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             this.require = (id: string) => require(id)
         });
     }

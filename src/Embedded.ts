@@ -9,6 +9,10 @@ declare interface EmbeddableEntityAnnotation extends EntityAnnotation {
     embeddable?: boolean;
 }
 
+declare interface  EmbeddableEntityTypeAnnotation {
+    Entity?: EmbeddableEntityAnnotation;
+}
+
 function Embedded() {
     return (target: any, propertyKey: string) => {
         Column({
@@ -34,6 +38,7 @@ function Embeddable() {
 export {
     EmbeddedEntityAnnotation,
     EmbeddableEntityAnnotation,
+    EmbeddableEntityTypeAnnotation,
     Embedded,
     Embeddable
 }
