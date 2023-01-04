@@ -1,5 +1,5 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, EmbeddedEntityAnnotation, EmbeddableEntityAnnotation, EmbeddableEntityTypeAnnotation } from '@themost/jspa';
+import { EntityColumnAnnotation, EntityLoaderStrategy, EmbeddedEntityAnnotation, EmbeddableEntityTypeAnnotation } from '@themost/jspa';
 import { PostalAddress } from './models';
 import { Party } from './models';
 

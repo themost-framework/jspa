@@ -190,3 +190,161 @@ The optional @Table annotation allows you to specify the properties of the datab
             ...
         }
 
+### @Column
+
+`@Column` annotation is used to specify the mapped column for a property
+
+    @Entity()
+    @Table()
+    class Thing extends DataObject {
+        ...
+        @Column()
+        public name?: string;
+    }
+
+- @Column.name 
+
+    (Optional) A string which defines the column name. If `@Column.name` is missing property name is being used.
+
+        class Thing extends DataObject {
+            ...
+            @Column({
+                name: 'obj_name'
+            })
+            public name?: string;
+        }
+
+- @Column.nullable 
+
+    (Optional) A boolean which indicates whether the mapped column is nullable of false. The default value is true.
+
+- @Column.type
+
+    A string which defines the type of the column. Column may be one of the primitive column types of `@themost/data` or an object type
+
+        class Thing extends DataObject {
+            ...
+            @Column({
+                type: ColumnType.Text
+            })
+            public name;
+
+            @Column({
+                type: 'User'
+            })
+            public createdBy;
+        }
+
+- @Column.length
+
+    (Optional) The column length
+
+        class Thing extends DataObject {
+            ...
+            @Column({
+                type: ColumnType.Text,
+                length: 100
+            })
+            public name;
+        }
+
+- @Column.scale
+
+    (Optional) The scale for a numeric column
+
+- @Column.precision
+
+    (Optional) The precision for a numeric column
+
+- @Column.insertable
+
+    (Optional) A boolean which indicates whether the column will be included while inserting objects or not
+
+- @Column.updatable
+
+    (Optional) A boolean which indicates whether the column will be included while updating objects or not
+
+### @Id()
+
+`@Id` is used to specify identity columns
+
+    @Entity()
+    @Table()
+    class Thing extends DataObject {
+        
+        @Id()
+        @Column({
+            type: ColumnType.Counter
+        })
+        @GeneratedValue({
+            strategy: GenerationType.Identity
+        })
+        public id;
+        ...
+    }
+
+### @GeneratedValue()
+
+`@GeneratedValue` annotation is used to specify generation strategy for identity columns
+
+    @Entity()
+    @Table()
+    class Thing extends DataObject {
+        
+        @Id()
+        @Column({
+            type: ColumnType.Counter
+        })
+        @GeneratedValue({
+            strategy: GenerationType.Identity
+        })
+        public id;
+        ...
+    }
+
+The available generation strategies are:
+
+- `GenerationType.Auto`: Based on the database’s support for primary key generation framework decides which generator type to be used.
+
+- `GenerationType.Identity`: In this case database is responsible for determining and assigning the next primary key.
+
+- `GenerationType.Sequence`: A sequence specify a database object that can be used as a source of primary key values.
+
+- `GenerationType.Table`: It keeps a separate table with the primary key values
+
+### @Formula
+
+`@Formula` annotation is used to specify calculated values.
+
+    class Thing extends DataObject {
+
+        ...
+        @Formula((event) => {
+            const context = event.context as any;
+            let user: { name?: string } =context.interactiveUser;
+            if (user && user.name) {
+                return {
+                    name: user.name
+                };
+            }
+            user = context.user;
+            if (user && user.name) {
+                return {
+                    name: user.name
+                };
+            }
+            return null;
+        })
+        public createdBy?: any;
+
+    }
+
+`@Formula` closure has `event` parameter of type `FormulaArgs`
+
+- `FormulaArgs.context` The current data context
+
+- `Formula.model` The current data model
+
+- `Formula.target` The current object
+
+
