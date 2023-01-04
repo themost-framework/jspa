@@ -472,3 +472,117 @@ e.g. Every `Group` has a collection of `members` of type `Account`
 The `@JoinTable` annotation is being used to define the database object where this relationship will be stored. `@JoinTable.joinColumns` contains the local property and `@JoinTable.inverseJoinColumns` contains the foreign property.
 
 e.g. `Group.members` many-to-many association will be stored in `GroupMembers` table where `GroupMembers.object` column will be a `Group.id` and `GroupMembers.value` column will be an `Account.id`.
+
+### @EntityListeners
+
+`@EntityListeners` annotation defines a collection of classes that contain procedures which are going to be executed before and after CRUD operations.
+
+    @Entity()
+    @EntityListeners(OnUserUpdateListener, OnUserRemoveListener, OnUserInitListener)
+    class User extends Account {
+        ...
+    }
+
+e.g. `OnUserUpdateListener` contains `PreUpdate` and `PostUpdate` procedures
+
+    export class OnUserUpdateListener {
+        @PreUpdate()
+        async onPreUpdate(event: PreUpdateEvent) {
+            //
+        }
+        @PostUpdate()
+        async onPostUpdate(event: PostUpdateEvent) {
+            //
+        }
+    }
+
+### @PreInit
+
+`@PreInit` annotation defines an event which will be occured before creating or updating an entity type
+
+    @PreInit()
+    async onPreInit(event: PreInitEvent) {
+        //
+    }
+
+### @PostInit 
+
+`@PostInit` annotation defines an event which will be occured after creating or updating an entity type
+
+    @PostInit()
+    async onPostInit(event: PostInitEvent) {
+        //
+    }
+
+### @PreLoad
+
+`@PreLoad` annotation defines an event which will be occured before loading an entity
+
+    @PreLoad()
+    async onPreLoad(event: PreLoadEvent) {
+        //
+    }
+
+### @PostLoad
+
+`@PostInit` annotation defines an event which will be occured after loading an entity
+
+    @PostLoad()
+    async onPostLoad(event: PostLoadEvent) {
+        //
+    }
+
+### @PrePersist
+
+`@PreLoad` annotation defines an event which will be occured before inserting an entity
+
+    @PrePersist()
+    async onPrePersist(event: PrePersistEvent) {
+        //
+    }
+
+### @PostPersist
+
+`@PostPersist` annotation defines an event which will be occured after inserting an entity
+
+    @PostPersist()
+    async onPostPersist(event: PostPersistEvent) {
+        //
+    }
+
+### @PreUpdate
+
+`@PreUpdate` annotation defines an event which will be occured before updating an entity
+
+    @PreUpdate()
+    async onPreUpdate(event: PreUpdateEvent) {
+        //
+    }
+
+### @PostUpdate
+
+`@PostUpdate` annotation defines an event which will be occured after updating an entity
+
+    @PostUpdate()
+    async onPostUpdate(event: PostUpdateEvent) {
+        //
+    }
+
+### @PreRemove
+
+`@PreRemove` annotation defines an event which will be occured before removing an entity
+
+    @PreRemove()
+    async onPreRemove(event: PreRemoveEvent) {
+        //
+    }
+
+### @PostUpdate
+
+`@PostRemove` annotation defines an event which will be occured after removing an entity
+
+    @PostRemove()
+    async onPostRemove(event: PostRemoveEvent) {
+        //
+    }
+
