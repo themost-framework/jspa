@@ -1,3 +1,4 @@
+import { DataModelPrivilegeBase } from '@themost/common';
 import { CascadeType } from './CascadeType';
 import { Column, ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
@@ -9,6 +10,7 @@ declare interface OneToManyAnnotation extends PermissionAnnotation {
     optional?: boolean;
     targetEntity?: any;
     mappedBy: string;
+    privileges?: DataModelPrivilegeBase[];
 }
 
 declare interface OneToManyColumnAnnotation extends ColumnAnnotation {

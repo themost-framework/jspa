@@ -6,7 +6,8 @@ import { Permission, PermissionAnnotation } from './Permission';
 import { DataModelPrivilegeBase } from '@themost/common';
 declare type AnyConstructor<T> = new(...args: any[]) => T;
 
-declare interface ManyToManyAnnotation extends PermissionAnnotation {
+declare interface OneToOneAnnotation extends PermissionAnnotation {
+    optional?: boolean;
     cascadeType?: CascadeType;
     fetchType?: FetchType;
     // tslint:disable-next-line: ban-types
@@ -15,11 +16,11 @@ declare interface ManyToManyAnnotation extends PermissionAnnotation {
     privileges?: DataModelPrivilegeBase[];
 }
 
-declare interface ManyToManyColumnAnnotation extends ColumnAnnotation {
-    manyToMany?: ManyToManyAnnotation;
+declare interface OneToOneColumnAnnotation extends ColumnAnnotation {
+    oneToOne?: OneToOneAnnotation;
 }
 
-function ManyToMany(annotation?: ManyToManyAnnotation) {
+function OneToOne(annotation?: OneToOneAnnotation) {
     return (target: any, propertyKey: string) => {
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
             Object.assign(target.constructor, {
@@ -31,7 +32,7 @@ function ManyToMany(annotation?: ManyToManyAnnotation) {
         const value = Object.assign({
             fetchType: FetchType.Lazy,
             optional: true
-        } as ManyToManyAnnotation, annotation);
+        } as OneToOneAnnotation, annotation);
         // get column
         let column = columns.Column.get(propertyKey);
         if (column == null) {
@@ -59,16 +60,16 @@ function ManyToMany(annotation?: ManyToManyAnnotation) {
         Permission(annotation.privileges);
         // set value property
         Object.assign(column, {
-            manyToMany: value,
+            oneToOne: value,
             type: targetEntity
-        } as ManyToManyColumnAnnotation);
+        } as OneToOneColumnAnnotation);
         // finally, set column annotation
         columns.Column.set(propertyKey, column);
       };
 }
 
 export {
-    ManyToManyAnnotation,
-    ManyToManyColumnAnnotation,
-    ManyToMany
+    OneToOneAnnotation,
+    OneToOneColumnAnnotation,
+    OneToOne
 }
