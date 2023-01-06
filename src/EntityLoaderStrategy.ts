@@ -29,24 +29,24 @@ class OneToOneAssociationParser {
             if (oneToOneColumn.oneToOne.fetchType === FetchType.Eager) {
                 this.target.expandable = true;
             }
-            const tableAnnotation = column as JoinTableAnnotation;
-            if (tableAnnotation) {
+            const tableAnnotation = column as JoinTableColumnAnnotation;
+            if (tableAnnotation.joinTable) {
                 // set parentModel (parentField is the primary key)
-                if (tableAnnotation.joinColumns.length != 1) {
+                if (tableAnnotation.joinTable.joinColumns.length != 1) {
                     throw new DataError('E_ANNOTATION', 'One-to-one association joinColumns must be a single-item array.', null, this.model.name, this.target.name);
                 }
-                if (tableAnnotation.inverseJoinColumns.length != 1) {
+                if (tableAnnotation.joinTable.inverseJoinColumns.length != 1) {
                     throw new DataError('E_ANNOTATION', 'One-to-one association inverseJoinColumns must be a single-item array.', null, this.model.name, this.target.name);
                 }
                 this.target.mapping = {
                     associationType: 'junction',
-                    associationAdapter: tableAnnotation.name,
+                    associationAdapter: tableAnnotation.joinTable.name,
                     parentModel: this.model.name,
-                    parentField: tableAnnotation.joinColumns[0].referencedColumnName,
-                    associationObjectField: tableAnnotation.joinColumns[0].name,
-                    childModel: tableAnnotation.name,
-                    childField: tableAnnotation.inverseJoinColumns[0].referencedColumnName,
-                    associationValueField: tableAnnotation.inverseJoinColumns[0].name
+                    parentField: tableAnnotation.joinTable.joinColumns[0].referencedColumnName,
+                    associationObjectField: tableAnnotation.joinTable.joinColumns[0].name,
+                    childModel: column.type,
+                    childField: tableAnnotation.joinTable.inverseJoinColumns[0].referencedColumnName,
+                    associationValueField: tableAnnotation.joinTable.inverseJoinColumns[0].name
                 }
             } else {
                 this.target.mapping = {
@@ -276,6 +276,9 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 // validate inherited entity table
                 const entityInheritance = entityClass.__proto__ as EntityInheritanceAnnotation;
                 if (entityInheritance.Inheritance && entityInheritance.Inheritance.strategy === InheritanceType.SingleTable) {
+                    throw new DataError('E_INHERITANCE', 'Single table inheritance is not support by @themost/jspa. Please use Joined or TablePerClass strategies', null, result.name);
+                }
+                if (entityInheritance.Inheritance && entityInheritance.Inheritance.strategy === InheritanceType.TablePerClass) {
                     result.implements = inheritedModel.name;
                 } else {
                     result.inherits = inheritedModel.name;
