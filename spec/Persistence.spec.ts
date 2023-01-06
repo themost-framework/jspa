@@ -37,7 +37,7 @@ describe('Persistence', () => {
     it('should use @Inheritance', () => {
         const target: EntityInheritanceAnnotation = Enumeration as EntityInheritanceAnnotation;
         expect(target.Inheritance).toBeTruthy();
-        expect(target.Inheritance.strategy).toBe(InheritanceType.SingleTable);
+        expect(target.Inheritance.strategy).toBe(InheritanceType.TablePerClass);
         const entityLoader = new EntityLoaderStrategy(new ConfigurationBase());
         const schema: DataModelProperties = entityLoader.getModelFromEntityClass(ActionStatusType);
         expect(schema.inherits).toBe(null);
