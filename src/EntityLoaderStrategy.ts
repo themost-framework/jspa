@@ -276,7 +276,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 // validate inherited entity table
                 const entityInheritance = entityClass.__proto__ as EntityInheritanceAnnotation;
                 if (entityInheritance.Inheritance && entityInheritance.Inheritance.strategy === InheritanceType.SingleTable) {
-                    throw new DataError('E_INHERITANCE', 'Single table inheritance is not support by @themost/jspa. Please use Joined or TablePerClass strategies', null, result.name);
+                    throw new DataError('E_INHERITANCE', 'Single table inheritance is not supported by @themost/jspa. Please use Joined or TablePerClass strategies', null, result.name);
                 }
                 if (entityInheritance.Inheritance && entityInheritance.Inheritance.strategy === InheritanceType.TablePerClass) {
                     result.implements = inheritedModel.name;

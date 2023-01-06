@@ -3,7 +3,7 @@ import { Intangible } from './Intangible';
 
 @Entity()
 @Inheritance({
-    strategy: InheritanceType.SingleTable
+    strategy: InheritanceType.TablePerClass
 })
 export class Enumeration extends Intangible {
     @Column({
