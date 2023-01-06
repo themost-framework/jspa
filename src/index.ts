@@ -16,6 +16,7 @@ export * from './FetchType';
 export * from './ManyToOne';
 export * from './ManyToMany';
 export * from './OneToMany';
+export * from './OneToOne';
 export * from './Formula';
 export * from './ColumnDefault';
 export * from './Inheritance';

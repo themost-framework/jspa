@@ -1,5 +1,6 @@
-import { CascadeType, Column, Entity, EntityListeners, FetchType, Formula, JoinTable, ManyToMany, PostInit, PostInitEvent, PostLoad } from '@themost/jspa';
+import { CascadeType, Column, Entity, EntityListeners, FetchType, Formula, JoinTable, ManyToMany, OneToOne, PostInit, PostInitEvent, PostLoad } from '@themost/jspa';
 import { Account, AccountType } from './Account';
+import { ExternalAccount } from './ExternalAccount';
 
 @Entity()
 @EntityListeners()
@@ -33,6 +34,29 @@ class User extends Account {
         ]
     })
     public groups?: Account[];
+
+    @OneToOne({
+        cascadeType: CascadeType.Remove,
+        fetchType: FetchType.Lazy,
+        optional: true,
+        targetEntity: ExternalAccount
+    })
+    @JoinTable({
+        name: 'ExternalAccounts',
+        joinColumns: [
+            {
+                name: 'user',
+                referencedColumnName: 'id'
+            }
+        ],
+        inverseJoinColumns: [
+            {
+                name: 'account',
+                referencedColumnName: 'id'
+            }
+        ]
+    })
+    public externalAccount: ExternalAccount
 
     @PostLoad()
     async onPostLoad() {
