@@ -321,6 +321,10 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                         readonly: Object.prototype.hasOwnProperty.call(column, 'insertable') ? !column.insertable : false,
                         editable: Object.prototype.hasOwnProperty.call(column, 'updatable') ? column.updatable : true
                     }
+                    // set description
+                    if (column.length) {
+                        field.description = column.description;
+                    }
                     // set size
                     if (column.length) {
                         field.size = column.length;

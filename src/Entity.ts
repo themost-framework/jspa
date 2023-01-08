@@ -16,7 +16,7 @@ function Entity(annotation?: EntityAnnotation) {
     return (target: any) => {
         const entityType = target as EntityTypeAnnotation;
         let embeddable = false;
-        if (entityType.Entity) {
+        if (entityType.Entity && entityType.Entity.name === target.name) {
             embeddable = (entityType.Entity as { embeddable: boolean }).embeddable;
         }
         entityType.Entity = Object.assign({
@@ -28,6 +28,9 @@ function Entity(annotation?: EntityAnnotation) {
                 embeddable
             });
         }
+        // set extra decorator for @themost/data#EdmMapping
+        target.entityTypeDecorator = entityType.Entity.name;
+        // set privileges
         Permission(annotation && annotation.privileges);
     };
 }

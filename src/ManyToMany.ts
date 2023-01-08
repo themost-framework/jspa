@@ -53,15 +53,16 @@ function ManyToMany(annotation?: ManyToManyAnnotation) {
                 targetEntity = r.name;
             }
         }
-        if (targetEntity == null) {
-            throw new EntityNotFoundException();
-        }
         Permission(annotation.privileges);
         // set value property
         Object.assign(column, {
-            manyToMany: value,
-            type: targetEntity
+            manyToMany: value
         } as ManyToManyColumnAnnotation);
+        if (targetEntity) {
+            Object.assign(column, {
+                type: targetEntity
+            });
+        }
         // finally, set column annotation
         columns.Column.set(propertyKey, column);
       };
