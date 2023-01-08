@@ -3,6 +3,7 @@ import { EntityTypeAnnotation } from './Entity';
 
 declare interface ColumnAnnotation {
     name?: string;
+    description?: string;
     nullable?: boolean;
     unique?: boolean;
     length?: number;
