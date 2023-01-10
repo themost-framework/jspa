@@ -15,6 +15,8 @@ import { OneToManyColumnAnnotation } from './OneToMany';
 import { CascadeType } from './CascadeType';
 import { DataFieldBase, DataError } from '@themost/common';
 import { OneToOneColumnAnnotation } from './OneToOne';
+import { ElementCollectionColumnAnnotation } from './ElementCollection';
+import { CollectionTableColumnAnnotation } from './CollectionTable';
 
 class OneToOneAssociationParser {
     constructor(public model: DataModelProperties, public target: DataFieldBase) {
@@ -182,6 +184,57 @@ class ManyToManyAnnotationParser {
                 }
                 if (Array.isArray(manyToManyColumn.manyToMany.privileges)) {
                     this.target.mapping.privileges = manyToManyColumn.manyToMany.privileges;
+                }
+            }
+        }
+    }
+}
+
+class ElementCollectionAnnotationParser {
+    constructor(public model: DataModelProperties, public target: DataFieldBase) {
+        //
+    }
+    parse(column: any) {
+        const annotation = column as ElementCollectionColumnAnnotation;
+        if (annotation.elementCollection) {
+            this.target.many = true;
+            this.target.nullable = annotation.elementCollection.optional === false ? false : true;
+            this.target.mapping = {
+                associationType: 'junction',
+                cascade: 'delete',
+                associationObjectField: 'object',
+                associationValueField: 'value'
+            };
+            // set exapndable
+            if (annotation.elementCollection.fetchType === FetchType.Eager) {
+                this.target.expandable = true;
+            }
+            this.target.type = new ColumnAnnotationParser(this.model).getTypeString(annotation.elementCollection.targetClass);
+            Object.assign(this.target.mapping, {
+                parentModel:this.model.name
+            });
+            const joinTableColumn = column as CollectionTableColumnAnnotation;
+            if (joinTableColumn.joinTable) {
+                Object.assign(this.target.mapping, {
+                    associationAdapter: joinTableColumn.joinTable.name
+                });
+                if (Array.isArray(joinTableColumn.joinTable.joinColumns)) {
+                    const joinColumn = joinTableColumn.joinTable.joinColumns[0];
+                    if (joinColumn && joinColumn.name) {
+                        this.target.mapping.associationObjectField = joinColumn.name;
+                    }
+                    if (joinColumn && joinColumn.referencedColumnName) {
+                        this.target.mapping.parentField = joinColumn.referencedColumnName;
+                    }
+                }
+                if (Array.isArray(joinTableColumn.joinTable.inverseJoinColumns)) {
+                    const inverseJoinColumn = joinTableColumn.joinTable.inverseJoinColumns[0];
+                    if (inverseJoinColumn && inverseJoinColumn.name) {
+                        this.target.mapping.associationValueField = inverseJoinColumn.name;
+                    }
+                }
+                if (Array.isArray(annotation.elementCollection.privileges)) {
+                    this.target.mapping.privileges = annotation.elementCollection.privileges;
                 }
             }
         }
@@ -395,6 +448,10 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     const manyToManyColumn = column as ManyToManyColumnAnnotation;
                     if (manyToManyColumn.manyToMany) {
                         new ManyToManyAnnotationParser(result, field).parse(column);
+                    }
+                    const elementCollectionColumn = column as ElementCollectionColumnAnnotation;
+                    if (elementCollectionColumn.elementCollection) {
+                        new ElementCollectionAnnotationParser(result, field).parse(column);
                     }
                     // one-to-many
                     const oneToManyColumn = column as OneToManyColumnAnnotation;

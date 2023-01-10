@@ -50,7 +50,7 @@ function ElementCollection(annotation?: ElementCollectionAnnotation) {
                 targetClass = r.name;
             }
         }
-        Permission(annotation.privileges)(target);
+        Permission(annotation.privileges)(value);
         // set value property
         Object.assign(column, {
             elementCollection: value
