@@ -403,7 +403,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     let columnType: string;
                     if (typeof column.type === 'string') {
                         columnType = column.type;
-                    } else {
+                    } else if (typeof column.type === 'function') {
                         const targetType = column.type as EntityTypeAnnotation;
                         if (targetType.Entity) {
                             columnType = targetType.Entity.name;
@@ -434,6 +434,11 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     const idColumn = column as IdColumnAnnotation;
                     if (idColumn.id) {
                         field.primary = true;
+                        if (field.type == null) {
+                            // field type has not been set
+                            // set default type to Counter (auto increment identity)
+                            field.type = 'Counter';
+                        }
                     }
                     // set nested
                     const embeddedColumn = column as EmbeddedEntityAnnotation;
