@@ -33,3 +33,5 @@ export * from './PreRemove';
 export * from './PostRemove';
 export * from './PreInit';
 export * from './PostInit';
+export * from './CollectionTable';
+export * from './ElementCollection';

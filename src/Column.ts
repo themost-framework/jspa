@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { EntityTypeAnnotation } from './Entity';
-
+declare type AnyConstructor<T> = new(...args: any[]) => T;
 declare interface ColumnAnnotation {
     name?: string;
     description?: string;
@@ -11,7 +11,7 @@ declare interface ColumnAnnotation {
     scale?: number;
     insertable?: boolean;
     updatable?: boolean;
-    type?: string;
+    type?: string | AnyConstructor<any>;
     entity?: string;
 }
 

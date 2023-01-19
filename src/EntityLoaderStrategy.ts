@@ -15,6 +15,8 @@ import { OneToManyColumnAnnotation } from './OneToMany';
 import { CascadeType } from './CascadeType';
 import { DataFieldBase, DataError } from '@themost/common';
 import { OneToOneColumnAnnotation } from './OneToOne';
+import { ElementCollectionColumnAnnotation } from './ElementCollection';
+import { CollectionTableColumnAnnotation } from './CollectionTable';
 
 class OneToOneAssociationParser {
     constructor(public model: DataModelProperties, public target: DataFieldBase) {
@@ -139,13 +141,24 @@ class ManyToManyAnnotationParser {
             this.target.mapping = {
                 associationType: 'junction'
             };
+            // set exapndable
             if (manyToManyColumn.manyToMany.fetchType === FetchType.Eager) {
                 this.target.expandable = true;
             }
-            Object.assign(this.target.mapping, {
-                parentModel: manyToManyColumn.manyToMany.targetEntity,
-                childModel: this.model.name
-            });
+
+            let targetType: string;
+            if (manyToManyColumn.type) {
+                targetType = new ColumnAnnotationParser(this.model).getTypeString(manyToManyColumn.type);
+                Object.assign(this.target.mapping, {
+                    parentModel:this.model.name,
+                });
+            } else if (manyToManyColumn.manyToMany.targetEntity) {
+                targetType = new ColumnAnnotationParser(this.model).getTypeString(manyToManyColumn.manyToMany.targetEntity);
+                Object.assign(this.target.mapping, {
+                    parentModel: manyToManyColumn.manyToMany.targetEntity,
+                    childModel: this.model.name
+                });
+            }
             if (manyToManyColumn.manyToMany.mappedBy != null) {
                 // todo: add parentModel, parentField, childModel, childField
                 Object.assign(this.target.mapping, {
@@ -173,6 +186,79 @@ class ManyToManyAnnotationParser {
                     this.target.mapping.privileges = manyToManyColumn.manyToMany.privileges;
                 }
             }
+        }
+    }
+}
+
+class ElementCollectionAnnotationParser {
+    constructor(public model: DataModelProperties, public target: DataFieldBase) {
+        //
+    }
+    parse(column: any) {
+        const annotation = column as ElementCollectionColumnAnnotation;
+        if (annotation.elementCollection) {
+            this.target.many = true;
+            this.target.nullable = annotation.elementCollection.optional === false ? false : true;
+            this.target.mapping = {
+                associationType: 'junction',
+                cascade: 'delete',
+                associationObjectField: 'object',
+                associationValueField: 'value'
+            };
+            // set exapndable
+            if (annotation.elementCollection.fetchType === FetchType.Eager) {
+                this.target.expandable = true;
+            }
+            this.target.type = new ColumnAnnotationParser(this.model).getTypeString(annotation.elementCollection.targetClass);
+            Object.assign(this.target.mapping, {
+                parentModel:this.model.name
+            });
+            const joinTableColumn = column as CollectionTableColumnAnnotation;
+            if (joinTableColumn.joinTable) {
+                Object.assign(this.target.mapping, {
+                    associationAdapter: joinTableColumn.joinTable.name
+                });
+                if (Array.isArray(joinTableColumn.joinTable.joinColumns)) {
+                    const joinColumn = joinTableColumn.joinTable.joinColumns[0];
+                    if (joinColumn && joinColumn.name) {
+                        this.target.mapping.associationObjectField = joinColumn.name;
+                    }
+                    if (joinColumn && joinColumn.referencedColumnName) {
+                        this.target.mapping.parentField = joinColumn.referencedColumnName;
+                    }
+                }
+                if (Array.isArray(joinTableColumn.joinTable.inverseJoinColumns)) {
+                    const inverseJoinColumn = joinTableColumn.joinTable.inverseJoinColumns[0];
+                    if (inverseJoinColumn && inverseJoinColumn.name) {
+                        this.target.mapping.associationValueField = inverseJoinColumn.name;
+                    }
+                }
+                if (Array.isArray(annotation.elementCollection.privileges)) {
+                    this.target.mapping.privileges = annotation.elementCollection.privileges;
+                }
+            }
+        }
+    }
+}
+
+class ColumnAnnotationParser {
+
+    constructor(public model: DataModelProperties) {
+        //
+    }
+
+    getTypeString(type: any) {
+        let columnType: string;
+        if (typeof type === 'string') {
+            return type;
+        } else {
+            const targetType = type as EntityTypeAnnotation;
+            if (targetType.Entity) {
+                columnType = targetType.Entity.name;
+            } else {
+                columnType = (targetType as { name: string }).name;
+            }
+            return columnType;
         }
     }
 }
@@ -314,9 +400,20 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
             const entityColumns = entityClass as EntityColumnAnnotation;
             if (entityColumns.Column) {
                 for (const column of entityColumns.Column.values()) {
+                    let columnType: string;
+                    if (typeof column.type === 'string') {
+                        columnType = column.type;
+                    } else if (typeof column.type === 'function') {
+                        const targetType = column.type as EntityTypeAnnotation;
+                        if (targetType.Entity) {
+                            columnType = targetType.Entity.name;
+                        } else {
+                            columnType = (targetType as { name: string }).name;
+                        }
+                    }
                     const field: DataFieldBase = {
                         name: column.name,
-                        type: column.type,
+                        type: columnType,
                         nullable: column.nullable,
                         readonly: Object.prototype.hasOwnProperty.call(column, 'insertable') ? !column.insertable : false,
                         editable: Object.prototype.hasOwnProperty.call(column, 'updatable') ? column.updatable : true
@@ -337,6 +434,11 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     const idColumn = column as IdColumnAnnotation;
                     if (idColumn.id) {
                         field.primary = true;
+                        if (field.type == null) {
+                            // field type has not been set
+                            // set default type to Counter (auto increment identity)
+                            field.type = 'Counter';
+                        }
                     }
                     // set nested
                     const embeddedColumn = column as EmbeddedEntityAnnotation;
@@ -351,6 +453,10 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     const manyToManyColumn = column as ManyToManyColumnAnnotation;
                     if (manyToManyColumn.manyToMany) {
                         new ManyToManyAnnotationParser(result, field).parse(column);
+                    }
+                    const elementCollectionColumn = column as ElementCollectionColumnAnnotation;
+                    if (elementCollectionColumn.elementCollection) {
+                        new ElementCollectionAnnotationParser(result, field).parse(column);
                     }
                     // one-to-many
                     const oneToManyColumn = column as OneToManyColumnAnnotation;
