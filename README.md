@@ -463,7 +463,8 @@ e.g. `Place` has a collection of places based on property `containedIn`
     }
 e.g. Every `Group` has a collection of `members` of type `Account`
 
-`@OneToMany` annotation has the following properties
+
+`@ManyToOne` annotation has the following properties
 
 - `@ManyToOne.fetchType` Defines that data can be lazily or eagerly fetched
 - `@ManyToOne.cascadeType` Defines the cascade operation that will be used while removing an object.
@@ -472,6 +473,39 @@ e.g. Every `Group` has a collection of `members` of type `Account`
 The `@JoinTable` annotation is being used to define the database object where this relationship will be stored. `@JoinTable.joinColumns` contains the local property and `@JoinTable.inverseJoinColumns` contains the foreign property.
 
 e.g. `Group.members` many-to-many association will be stored in `GroupMembers` table where `GroupMembers.object` column will be a `Group.id` and `GroupMembers.value` column will be an `Account.id`.
+
+### @ElementCollection
+
+`@ElementCollection` annotation is used to define a collection of primitive typed values e.g. an array of strings or numbers.
+
+    class Account extends Thing {
+        ...
+        @ManyToMany({
+            targetClass: Text,
+            fetchType: FetchType.Lazy
+        })
+        @CollectionTable({
+            name: 'AccountTags',
+            joinColumns: [
+                {
+                    name: 'object',
+                    referencedColumnName: 'id'
+                }
+            ],
+            inverseJoinColumns: [
+                {
+                    name: 'value'
+                }
+            ]
+        })
+        tags;
+        ...
+    }
+e.g. Every `Account` has a collection of `tags` of type `Text` which is a subclass of `String`
+
+The `@CollectionTable` annotation is being used to define the database object where this relationship will be stored. `@CollectionTable.joinColumns` contains the local property and `@CollectionTable.inverseJoinColumns` may contain the column where each value will be stored.
+
+e.g. `Account.tags` will be persisted in `AccountTags` table where `object` field contains `Account.id` and `value` field contains `Account.tag` value.
 
 ### @EntityListeners
 
