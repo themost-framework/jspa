@@ -28,8 +28,6 @@ function Entity(annotation?: EntityAnnotation) {
                 embeddable
             });
         }
-        // set extra decorator for @themost/data#EdmMapping
-        target.entityTypeDecorator = entityType.Entity.name;
         // set privileges
         Permission(annotation && annotation.privileges);
     };
