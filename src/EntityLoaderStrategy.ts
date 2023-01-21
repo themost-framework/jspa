@@ -8,15 +8,19 @@ import { InheritanceType } from './InheritanceType';
 import { IdColumnAnnotation } from './Id';
 import { ManyToOneColumnAnnotation } from './ManyToOne';
 import { FetchType } from './FetchType';
-import { EmbeddableEntityAnnotation, EmbeddedEntityAnnotation } from './Embedded';
+import { EmbeddedEntityAnnotation } from './Embedded';
 import { ManyToManyColumnAnnotation } from './ManyToMany';
-import { JoinTableAnnotation, JoinTableColumnAnnotation } from './JoinTable';
+import { JoinTableColumnAnnotation } from './JoinTable';
 import { OneToManyColumnAnnotation } from './OneToMany';
 import { CascadeType } from './CascadeType';
 import { DataFieldBase, DataError } from '@themost/common';
 import { OneToOneColumnAnnotation } from './OneToOne';
 import { ElementCollectionColumnAnnotation } from './ElementCollection';
 import { CollectionTableColumnAnnotation } from './CollectionTable';
+
+declare interface EdmEntityTypeConfiguration {
+    entityTypeDecorator: string;
+}
 
 class OneToOneAssociationParser {
     constructor(public model: DataModelProperties, public target: DataFieldBase) {
@@ -333,7 +337,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
             name: entityType.Entity.name,
             version: entityType.Entity.version || '1.0.0',
             abstract: false,
-            hidden: false,
+            hidden: true,
             caching: 'none',
             inherits: null,
             implements: null,
@@ -371,12 +375,10 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                 }
             }
         }
-        const embeddableEntity = entityType.Entity as EmbeddableEntityAnnotation;
-        if (embeddableEntity.embeddable) {
-            result.hidden = true;
-        }
-        if (entityType.Entity.abstract) {
-            result.hidden = true;
+        
+        const edmEntityType = entityType as EdmEntityTypeConfiguration;
+        if (edmEntityType && edmEntityType.entityTypeDecorator) {
+            result.hidden = false;
         }
         // get table annotation
         if (Object.prototype.hasOwnProperty.call(entityClass, 'Table') === true) {
