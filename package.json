@@ -28,8 +28,8 @@
   "homepage": "https://github.com/themost-framework/jspa#readme",
   "peerDependencies": {
     "@themost/common": "^2",
-    "@themost/data": "^2",
-    "@themost/query": "^2",
+    "@themost/data": "^2.9",
+    "@themost/query": "^2.9",
     "@themost/xml": "^2"
   },
   "devDependencies": {
