@@ -35,3 +35,4 @@ export * from './PreInit';
 export * from './PostInit';
 export * from './CollectionTable';
 export * from './ElementCollection';
+export * from './Validation';
