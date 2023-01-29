@@ -1,3 +1,4 @@
+import { DataModelBase } from '@themost/common';
 import { EntityColumnAnnotation, ColumnAnnotation } from './Column';
 
 declare interface ValidationAnnotation {
@@ -8,6 +9,7 @@ declare interface ValidationAnnotation {
     minLength?: any;
     maxLength?: any;
     message?: string;
+    validator?: (event: { model: DataModelBase, target: any, value: any }) => Promise<boolean>;
 }
 
 declare interface ColumnValidationAnnotation extends ColumnAnnotation {
@@ -57,14 +59,14 @@ function Pattern(pattern?: string, patternMessage?: string) {
       };
 }
 
-function Size(min?: any, max?: any, message?: string) {
+function Size(minLength?: any, maxLength?: any, message?: string) {
     return (target: any, propertyKey: string) => {
         // get column annotation
         const column = tryGetColumn(target, propertyKey);
         const value = {
-            minValue: min,
-            maxValue: max,
-            message: message
+            minLength,
+            maxLength,
+            message
         };
         // assign value
         Object.assign(column, {
@@ -75,14 +77,65 @@ function Size(min?: any, max?: any, message?: string) {
       };
 }
 
-function Length(min?: any, max?: any, message?: string) {
+function Min(minValue?: any, message?: string) {
     return (target: any, propertyKey: string) => {
         // get column annotation
         const column = tryGetColumn(target, propertyKey);
         const value = {
-            minLength: min,
-            maxLength: max,
-            message: message
+            minValue,
+            message
+        };
+        // assign value
+        Object.assign(column, {
+            validation: value
+        } as ColumnValidationAnnotation);
+        // set column annotation
+        trySetColumn(target, propertyKey, column);
+      };
+}
+
+function Max(maxValue?: any, message?: string) {
+    return (target: any, propertyKey: string) => {
+        // get column annotation
+        const column = tryGetColumn(target, propertyKey);
+        const value = {
+            maxValue,
+            message
+        };
+        // assign value
+        Object.assign(column, {
+            validation: value
+        } as ColumnValidationAnnotation);
+        // set column annotation
+        trySetColumn(target, propertyKey, column);
+      };
+}
+
+function Range(minValue: any, maxValue: any, message?: string) {
+    return (target: any, propertyKey: string) => {
+        // get column annotation
+        const column = tryGetColumn(target, propertyKey);
+        const value = {
+            minValue,
+            maxValue,
+            message
+        };
+        // assign value
+        Object.assign(column, {
+            validation: value
+        } as ColumnValidationAnnotation);
+        // set column annotation
+        trySetColumn(target, propertyKey, column);
+      };
+}
+
+function Validate(validator: (event: { model: DataModelBase, target: any, value: any }) => Promise<boolean>, message?: string) {
+    return (target: any, propertyKey: string) => {
+        // get column annotation
+        const column = tryGetColumn(target, propertyKey);
+        const value = {
+            validator,
+            message
         };
         // assign value
         Object.assign(column, {
@@ -96,6 +149,9 @@ function Length(min?: any, max?: any, message?: string) {
 export {
     Pattern,
     Size,
-    Length,
+    Min,
+    Max,
+    Validate,
+    Range,
     ColumnValidationAnnotation
 }

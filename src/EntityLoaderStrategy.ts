@@ -17,6 +17,7 @@ import { DataFieldBase, DataError } from '@themost/common';
 import { OneToOneColumnAnnotation } from './OneToOne';
 import { ElementCollectionColumnAnnotation } from './ElementCollection';
 import { CollectionTableColumnAnnotation } from './CollectionTable';
+import { ColumnValidationAnnotation } from './Validation';
 
 declare interface EdmEntityTypeConfiguration {
     entityTypeDecorator: string;
@@ -431,6 +432,11 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     // set scale
                     if (Object.prototype.hasOwnProperty.call(column, 'scale')) {
                         field.scale = column.scale;
+                    }
+                    // set validation
+                    const columnValidation = column as ColumnValidationAnnotation;
+                    if (columnValidation.validation) {
+                        field.validation = columnValidation.validation as any;
                     }
                     // set primary
                     const idColumn = column as IdColumnAnnotation;
