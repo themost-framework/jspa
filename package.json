@@ -1,6 +1,6 @@
 {
   "name": "@themost/jspa",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "description": "MOST Web Framework Persistence API",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
