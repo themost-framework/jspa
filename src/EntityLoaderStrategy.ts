@@ -403,6 +403,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
             const entityColumns = entityClass as EntityColumnAnnotation;
             if (entityColumns.Column) {
                 for (const column of entityColumns.Column.values()) {
+                    // set column type
                     let columnType: string;
                     if (typeof column.type === 'string') {
                         columnType = column.type;
@@ -420,6 +421,21 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                         nullable: column.nullable,
                         readonly: Object.prototype.hasOwnProperty.call(column, 'insertable') ? !column.insertable : false,
                         editable: Object.prototype.hasOwnProperty.call(column, 'updatable') ? column.updatable : true
+                    }
+                    // set additional type
+                    if (column.additionalType) {
+                        let columnAdditionalType: string;
+                        if (typeof column.additionalType === 'string') {
+                            columnAdditionalType = column.additionalType;
+                        } else if (typeof column.additionalType === 'function') {
+                            const targetType = column.additionalType as EntityTypeAnnotation;
+                            if (targetType.Entity) {
+                                columnAdditionalType = targetType.Entity.name;
+                            } else {
+                                columnAdditionalType = (targetType as { name: string }).name;
+                            }
+                        }
+                        field.additionalType = columnAdditionalType;
                     }
                     // set description
                     if (column.length) {

@@ -13,6 +13,7 @@ declare interface ColumnAnnotation {
     insertable?: boolean;
     updatable?: boolean;
     type?: string | AnyConstructor<unknown>;
+    additionalType?: string | AnyConstructor<unknown>;
     entity?: string;
 }
 
