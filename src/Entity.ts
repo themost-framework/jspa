@@ -6,14 +6,15 @@ declare interface EntityAnnotation extends PermissionAnnotation {
     abstract?: boolean;
 }
 
-declare type EntityConstructor<T> = new(...args: any[]) => T;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+declare type EntityConstructor<T> = Function & { prototype: T };
 
 declare interface EntityTypeAnnotation {
     Entity?: EntityAnnotation;
 }
 
-function Entity(annotation?: EntityAnnotation) {
-    return (target: any) => {
+function Entity(annotation?: EntityAnnotation): ClassDecorator {
+    return (target) => {
         const entityType = target as EntityTypeAnnotation;
         let embeddable = false;
         if (entityType.Entity && entityType.Entity.name === target.name) {

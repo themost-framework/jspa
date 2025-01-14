@@ -25,11 +25,10 @@ declare interface EntityTableAnnotation {
     Table?: TableAnnotation;
 }
 
-function Table(annotation?: TableAnnotation) {
-    return (target: any) => {
+function Table(annotation?: TableAnnotation): ClassDecorator {
+    return (target) => {
         const table: EntityTableAnnotation = target as EntityTableAnnotation;
         table.Table = Object.assign({
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             name: `${target.name}Base`
         }, annotation);
     };

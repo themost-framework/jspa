@@ -1,5 +1,4 @@
 import { ConfigurationBase } from '@themost/common';
-import { EntityColumnAnnotation, EntityLoaderStrategy, OneToManyColumnAnnotation } from '@themost/jspa';
 import { DefaultEntityLoaderStrategy } from '@themost/jspa/platform-server';
 import { User } from './app/models/User';
 

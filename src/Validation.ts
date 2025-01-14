@@ -1,22 +1,23 @@
 import { DataModelBase } from '@themost/common';
 import { EntityColumnAnnotation, ColumnAnnotation } from './Column';
+import { SymbolTypeNotSupportedException } from './Errors';
 
 declare interface ValidationAnnotation {
     pattern?: string,
     patternMessage?: string;
-    minValue?: any;
-    maxValue?: any;
-    minLength?: any;
-    maxLength?: any;
+    minValue?: unknown;
+    maxValue?: unknown;
+    minLength?: unknown;
+    maxLength?: unknown;
     message?: string;
-    validator?: (event: { model: DataModelBase, target: any, value: any }) => Promise<boolean>;
+    validator?: (event: { model: DataModelBase, target: unknown, value: unknown }) => Promise<boolean>;
 }
 
 declare interface ColumnValidationAnnotation extends ColumnAnnotation {
     validation?: ValidationAnnotation;
 }
 
-function tryGetColumn(target: any, propertyKey: string) {
+function tryGetColumn(target: unknown, propertyKey: string) {
     if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
         Object.assign(target.constructor, {
             Column: new Map()
@@ -32,7 +33,7 @@ function tryGetColumn(target: any, propertyKey: string) {
     return column;
 }
 
-function trySetColumn(target: any, propertyKey: string, column: ColumnAnnotation) {
+function trySetColumn(target: unknown, propertyKey: string, column: ColumnAnnotation) {
     if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
         Object.assign(target.constructor, {
             Column: new Map()
@@ -42,8 +43,11 @@ function trySetColumn(target: any, propertyKey: string, column: ColumnAnnotation
     columns.Column.set(propertyKey, column);
 }
 
-function Pattern(pattern?: string, patternMessage?: string) {
-    return (target: any, propertyKey: string) => {
+function Pattern(pattern?: string, patternMessage?: string): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         // get column annotation
         const column = tryGetColumn(target, propertyKey);
         const value = {
@@ -59,8 +63,11 @@ function Pattern(pattern?: string, patternMessage?: string) {
       };
 }
 
-function Size(minLength?: any, maxLength?: any, message?: string) {
-    return (target: any, propertyKey: string) => {
+function Size(minLength?: unknown, maxLength?: unknown, message?: string): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         // get column annotation
         const column = tryGetColumn(target, propertyKey);
         const value = {
@@ -77,8 +84,11 @@ function Size(minLength?: any, maxLength?: any, message?: string) {
       };
 }
 
-function Min(minValue?: any, message?: string) {
-    return (target: any, propertyKey: string) => {
+function Min(minValue?: unknown, message?: string): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         // get column annotation
         const column = tryGetColumn(target, propertyKey);
         const value = {
@@ -94,8 +104,11 @@ function Min(minValue?: any, message?: string) {
       };
 }
 
-function Max(maxValue?: any, message?: string) {
-    return (target: any, propertyKey: string) => {
+function Max(maxValue?: unknown, message?: string): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         // get column annotation
         const column = tryGetColumn(target, propertyKey);
         const value = {
@@ -111,8 +124,11 @@ function Max(maxValue?: any, message?: string) {
       };
 }
 
-function Range(minValue: any, maxValue: any, message?: string) {
-    return (target: any, propertyKey: string) => {
+function Range(minValue: unknown, maxValue: unknown, message?: string): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         // get column annotation
         const column = tryGetColumn(target, propertyKey);
         const value = {
@@ -129,8 +145,11 @@ function Range(minValue: any, maxValue: any, message?: string) {
       };
 }
 
-function Validate(validator: (event: { model: DataModelBase, target: any, value: any }) => Promise<boolean>, message?: string) {
-    return (target: any, propertyKey: string) => {
+function Validate(validator: (event: { model: DataModelBase, target: unknown, value: unknown }) => Promise<boolean>, message?: string): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         // get column annotation
         const column = tryGetColumn(target, propertyKey);
         const value = {

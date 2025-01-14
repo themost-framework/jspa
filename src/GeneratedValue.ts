@@ -1,4 +1,5 @@
 import { EntityColumnAnnotation, ColumnAnnotation } from './Column';
+import { SymbolTypeNotSupportedException } from './Errors';
 
 enum GenerationType {
     Auto = 'AUTO',
@@ -15,8 +16,11 @@ declare interface GeneratedValueColumnAnnotation extends ColumnAnnotation {
     generatedValue?: GeneratedValueAnnotation;
 }
 
-function GeneratedValue(annotation?: GeneratedValueAnnotation) {
-    return (target: any, propertyKey: string) => {
+function GeneratedValue(annotation?: GeneratedValueAnnotation): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
             Object.assign(target.constructor, {
                 Column: new Map()

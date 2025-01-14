@@ -1,7 +1,11 @@
 import {  CallbackMethodCollectionAnnotation, CallbackMethod } from './EntityListener';
+import { SymbolTypeNotSupportedException } from './Errors';
 
-function SetCallbackMethod(method: CallbackMethod) {
-    return (target: any, propertyKey: any, propertyDescriptor: any) => {
+function SetCallbackMethod(method: CallbackMethod): MethodDecorator {
+    return (target, propertyKey, propertyDescriptor) => {
+        if (typeof propertyKey === 'symbol') {
+                    throw new SymbolTypeNotSupportedException();
+                }
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'CallbackMethods') === false) {
             Object.assign(target.constructor, {
                 CallbackMethods: []
@@ -10,7 +14,6 @@ function SetCallbackMethod(method: CallbackMethod) {
         const entityClass: CallbackMethodCollectionAnnotation = target.constructor as CallbackMethodCollectionAnnotation;
         entityClass.CallbackMethods.push({
             type: method,
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             name: `${target.constructor.name}.${propertyKey}`,
             callback: propertyDescriptor.value
         });
@@ -19,7 +22,7 @@ function SetCallbackMethod(method: CallbackMethod) {
 
 export interface DataModelEvent {
     type: string;
-    event: (event: any, callback: (err?: Error) => void) => void;
+    event: (event: unknown, callback: (err?: Error) => void) => void;
 }
 
 export interface DataModelEventConverter {

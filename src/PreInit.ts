@@ -8,7 +8,7 @@ function PreInit() {
 
 declare interface PreInitEvent {
     context?: DataContextBase,
-    entityClass?: EntityConstructor<any>;
+    entityClass?: EntityConstructor<unknown>;
     model?: DataModelBase;
 }
 

@@ -1,17 +1,16 @@
 import { CascadeType } from './CascadeType';
-import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
+import { AnyConstructor, ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
-import { EntityNotFoundException } from './Errors';
+import { EntityNotFoundException, SymbolTypeNotSupportedException } from './Errors';
 import { Permission, PermissionAnnotation } from './Permission';
 import { DataModelPrivilegeBase } from '@themost/common';
-declare type AnyConstructor<T> = new(...args: any[]) => T;
 
 declare interface OneToOneAnnotation extends PermissionAnnotation {
     optional?: boolean;
     cascadeType?: CascadeType;
     fetchType?: FetchType;
     // tslint:disable-next-line: ban-types
-    targetEntity?: string | AnyConstructor<any>;
+    targetEntity?: string | AnyConstructor<unknown>;
     mappedBy?: string;
     privileges?: DataModelPrivilegeBase[];
 }
@@ -20,8 +19,11 @@ declare interface OneToOneColumnAnnotation extends ColumnAnnotation {
     oneToOne?: OneToOneAnnotation;
 }
 
-function OneToOne(annotation?: OneToOneAnnotation) {
-    return (target: any, propertyKey: string) => {
+function OneToOne(annotation?: OneToOneAnnotation): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
             Object.assign(target.constructor, {
                 Column: new Map()
@@ -48,8 +50,7 @@ function OneToOne(annotation?: OneToOneAnnotation) {
             targetEntity = annotation.targetEntity
         } else {
             // get type from reflect metadata
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            const r: { name?: string; prototype?: any } = Reflect.getMetadata('design:type', target, propertyKey);
+            const r: { name?: string; prototype?: unknown } = Reflect.getMetadata('design:type', target, propertyKey);
             if (r && r.name) {
                 targetEntity = r.name;
             }

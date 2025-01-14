@@ -8,10 +8,10 @@ function PreUpdate() {
 
 declare interface PreUpdateEvent {
     context?: DataContextBase,
-    entityClass?: EntityConstructor<any>;
+    entityClass?: EntityConstructor<unknown>;
     model?: DataModelBase;
-    target?: any;
-    previous?: any;
+    target?: unknown;
+    previous?: unknown;
 }
 
 export {

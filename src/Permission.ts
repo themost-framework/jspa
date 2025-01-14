@@ -13,8 +13,8 @@ export enum PrivilegeMask {
     Full = 31
 }
 
-function Permission(items?: DataModelPrivilegeBase[]) {
-    return (target: any) => {
+function Permission(items?: DataModelPrivilegeBase[]): ClassDecorator {
+    return (target) => {
         const targetItem = target as PermissionAnnotation;
         if (Array.isArray(items) && items.length === 0) {
             targetItem.privileges = items;

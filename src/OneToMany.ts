@@ -3,12 +3,13 @@ import { CascadeType } from './CascadeType';
 import { Column, ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { FetchType } from './FetchType';
 import { Permission, PermissionAnnotation } from './Permission';
+import { SymbolTypeNotSupportedException } from './Errors';
 
 declare interface OneToManyAnnotation extends PermissionAnnotation {
     cascadeType?: CascadeType;
     fetchType?: FetchType;
     optional?: boolean;
-    targetEntity?: any;
+    targetEntity?: unknown;
     mappedBy: string;
     privileges?: DataModelPrivilegeBase[];
 }
@@ -17,8 +18,11 @@ declare interface OneToManyColumnAnnotation extends ColumnAnnotation {
     oneToMany?: OneToManyAnnotation;
 }
 
-function OneToMany(annotation: OneToManyAnnotation) {
-    return (target: any, propertyKey: string) => {
+function OneToMany(annotation: OneToManyAnnotation): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
             Object.assign(target.constructor, {
                 Column: new Map()

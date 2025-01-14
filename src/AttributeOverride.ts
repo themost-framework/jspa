@@ -9,8 +9,8 @@ declare interface EntityAttributeOverrideAnnotation {
     AttributeOverrides?: AttributeOverrideAnnotation[];
 }
 
-function AttributeOverride(annotation?: AttributeOverrideAnnotation) {
-    return (target: any) => {
+function AttributeOverride(annotation?: AttributeOverrideAnnotation): ClassDecorator {
+    return (target) => {
         if (Object.prototype.hasOwnProperty.call(target, 'AttributeOverrides') === false) {
             Object.assign(target, {
                 AttributeOverrides: []

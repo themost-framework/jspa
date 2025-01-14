@@ -1,6 +1,5 @@
 enum ColumnType {
     Float = 'Float',
-    // eslint-disable-next-line id-denylist
     Boolean = 'Boolean',
     Date = 'Date',
     DateTime = 'DateTime',
@@ -8,7 +7,6 @@ enum ColumnType {
     Short = 'Short',
     Counter = 'Counter',
     Duration = 'Duration',
-    // eslint-disable-next-line id-denylist
     Number = 'Number',
     Text = 'Text',
     Time = 'Time',

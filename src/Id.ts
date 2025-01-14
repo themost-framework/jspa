@@ -1,4 +1,5 @@
 import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
+import { SymbolTypeNotSupportedException } from './Errors';
 
 declare interface IdAnnotation {
     name: string;
@@ -8,8 +9,11 @@ declare interface IdColumnAnnotation extends ColumnAnnotation {
     id?: boolean;
 }
 
-function Id() {
-    return (target: any, propertyKey: string) => {
+function Id(): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
             Object.assign(target.constructor, {
                 Column: new Map()

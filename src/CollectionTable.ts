@@ -1,4 +1,5 @@
 import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
+import { SymbolTypeNotSupportedException } from './Errors';
 import { JoinColumnAnnotation } from './JoinColumn';
 
 declare interface CollectionTableAnnotation {
@@ -14,8 +15,11 @@ declare interface CollectionTableColumnAnnotation extends ColumnAnnotation {
     joinTable?: CollectionTableAnnotation;
 }
 
-function CollectionTable(annotation?: CollectionTableAnnotation) {
-    return (target: any, propertyKey: string) => {
+function CollectionTable(annotation?: CollectionTableAnnotation): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
             Object.assign(target.constructor, {
                 Column: new Map()

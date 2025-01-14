@@ -8,7 +8,7 @@ function PostInit() {
 
 declare interface PostInitEvent {
     context?: DataContextBase,
-    entityClass?: EntityConstructor<any>;
+    entityClass?: EntityConstructor<unknown>;
     model?: DataModelBase;
 }
 

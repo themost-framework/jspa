@@ -8,8 +8,8 @@ declare interface EntityInheritanceAnnotation {
     Inheritance?: InheritanceAnnotation;
 }
 
-function Inheritance(annotation?: InheritanceAnnotation) {
-    return (target: any) => {
+function Inheritance(annotation?: InheritanceAnnotation): ClassDecorator {
+    return (target) => {
         const entityInheritance: EntityInheritanceAnnotation = target as EntityInheritanceAnnotation;
         entityInheritance.Inheritance = Object.assign({
             strategy: InheritanceType.Joined

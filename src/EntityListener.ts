@@ -1,11 +1,12 @@
-declare type EntityListenerConstructor<T> = new(...args: any[]) => T;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+declare type EntityListenerConstructor<T> = Function & { prototype: T };
 
-declare type CallbackMethod = () => any;
+declare type CallbackMethod = () => unknown;
 
 declare interface CallbackMethodAnnotation {
     type?: CallbackMethod;
     name?: string;
-    callback?: any;
+    callback?: unknown;
 }
 
 declare interface CallbackMethodCollectionAnnotation {
@@ -13,12 +14,12 @@ declare interface CallbackMethodCollectionAnnotation {
 }
 
 declare interface EntityListenerCollectionAnnotation {
-    EntityListeners?: EntityListenerConstructor<any>[];
+    EntityListeners?: EntityListenerConstructor<unknown>[];
 }
 
 
-function EntityListeners(...value: EntityListenerConstructor<any>[]) {
-    return (target: any) => {
+function EntityListeners(...value: EntityListenerConstructor<unknown>[]): ClassDecorator {
+    return (target) => {
         if (Object.prototype.hasOwnProperty.call(target, 'EntityListeners') === false) {
             Object.assign(target, {
                 EntityListeners: []
