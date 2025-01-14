@@ -1,23 +1,25 @@
 import { CascadeType } from './CascadeType';
-import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
+import { ColumnAnnotation, EntityColumnAnnotation, AnyConstructor } from './Column';
+import { SymbolTypeNotSupportedException } from './Errors';
 import { FetchType } from './FetchType';
 import { Permission, PermissionAnnotation } from './Permission';
-
-declare type AnyConstructor<T> = new(...args: any[]) => T;
 
 declare interface ManyToOneAnnotation extends PermissionAnnotation {
     cascadeType?: CascadeType;
     fetchType?: FetchType;
     optional?: boolean;
-    targetEntity?: string | AnyConstructor<any>;
+    targetEntity?: string | AnyConstructor<unknown>;
 }
 
 declare interface ManyToOneColumnAnnotation extends ColumnAnnotation {
     manyToOne?: ManyToOneAnnotation;
 }
 
-function ManyToOne(annotation?: ManyToOneAnnotation) {
-    return (target: any, propertyKey: string) => {
+function ManyToOne(annotation?: ManyToOneAnnotation): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
             Object.assign(target.constructor, {
                 Column: new Map()

@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { EntityTypeAnnotation } from './Entity';
-declare type AnyConstructor<T> = new(...args: any[]) => T;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+declare type AnyConstructor<T> = Function & { prototype: T };
 declare interface ColumnAnnotation {
     name?: string;
     description?: string;
@@ -11,7 +12,7 @@ declare interface ColumnAnnotation {
     scale?: number;
     insertable?: boolean;
     updatable?: boolean;
-    type?: string | AnyConstructor<any>;
+    type?: string | AnyConstructor<unknown>;
     entity?: string;
 }
 
@@ -19,8 +20,8 @@ declare interface EntityColumnAnnotation {
     Column?: Map<string, ColumnAnnotation>;
 }
 
-function Column(annotation?: ColumnAnnotation) {
-    return (target: any, propertyKey: string) => {
+function Column(annotation?: ColumnAnnotation): PropertyDecorator {
+    return (target, propertyKey: string) => {
         if (Object.prototype.hasOwnProperty.call(target.constructor, 'Column') === false) {
             Object.assign(target.constructor, {
                 Column: new Map()
@@ -36,7 +37,7 @@ function Column(annotation?: ColumnAnnotation) {
         }, column, annotation);
         if (value.type == null) {
             // get metadata
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const r: { name?: string; prototype?: any } = Reflect.getMetadata('design:type', target, propertyKey);
             if (r && r.name) {
                 value.type = r.name;
@@ -57,6 +58,7 @@ function Basic() {
 }
 
 export {
+    AnyConstructor,
     ColumnAnnotation,
     EntityColumnAnnotation,
     Column,

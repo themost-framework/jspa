@@ -9,7 +9,6 @@ describe('Embedded', () => {
         const column: EmbeddedEntityAnnotation = target.Column.get('address');
         expect(column).toBeTruthy();
         expect(column.embedded).toBeTruthy();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         const newLocal = new ConfigurationBase();
         const entityLoader = new EntityLoaderStrategy(newLocal);
         const schema: DataModelProperties = entityLoader.getModelFromEntityClass(Party);

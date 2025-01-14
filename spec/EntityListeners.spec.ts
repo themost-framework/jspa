@@ -1,6 +1,5 @@
 import { CallbackMethodCollectionAnnotation, EntityListenerCollectionAnnotation } from '@themost/jspa';
 import { User } from './models';
-import { beforeSave } from '@themost/jspa/listener';
 
 describe('EntityListeners', () => {
     it('should use @EntityListeners', () => {

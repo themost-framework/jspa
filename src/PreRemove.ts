@@ -9,9 +9,9 @@ function PreRemove() {
 
 declare interface PreRemoveEvent {
     context?: DataContextBase,
-    entityClass?: EntityConstructor<any>;
+    entityClass?: EntityConstructor<unknown>;
     model?: DataModelBase;
-    target?: any;
+    target?: unknown;
 }
 
 export {

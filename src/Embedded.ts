@@ -1,5 +1,6 @@
 import { ColumnAnnotation, Column, EntityColumnAnnotation } from './Column';
 import { Entity, EntityAnnotation } from './Entity';
+import { SymbolTypeNotSupportedException } from './Errors';
 
 declare interface EmbeddedEntityAnnotation extends ColumnAnnotation {
     embedded?: boolean;
@@ -13,8 +14,11 @@ declare interface  EmbeddableEntityTypeAnnotation {
     Entity?: EmbeddableEntityAnnotation;
 }
 
-function Embedded() {
-    return (target: any, propertyKey: string) => {
+function Embedded(): PropertyDecorator {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol') {
+            throw new SymbolTypeNotSupportedException();
+        }
         Column({
             name: propertyKey
         })(target, propertyKey);
@@ -27,8 +31,8 @@ function Embedded() {
     };
 }
 
-function Embeddable() {
-    return (target: any) => {
+function Embeddable(): ClassDecorator {
+    return (target) => {
         Entity({
             embeddable: true
         } as EmbeddableEntityAnnotation)(target);

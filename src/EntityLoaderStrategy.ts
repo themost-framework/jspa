@@ -1,7 +1,7 @@
 import { ConfigurationBase, DataModelProperties } from '@themost/common';
 import { SchemaLoaderStrategy } from '@themost/data';
 import { EntityInheritanceAnnotation } from './Inheritance';
-import { EntityColumnAnnotation } from './Column';
+import { ColumnAnnotation, EntityColumnAnnotation } from './Column';
 import { EntityTypeAnnotation } from './Entity';
 import { EntityTableAnnotation } from './Table';
 import { InheritanceType } from './InheritanceType';
@@ -27,7 +27,7 @@ class OneToOneAssociationParser {
     constructor(public model: DataModelProperties, public target: DataFieldBase) {
         //
     }
-    parse(column: any) {
+    parse(column: ColumnAnnotation) {
         const oneToOneColumn = column as OneToOneColumnAnnotation;
         if (oneToOneColumn.oneToOne) {
             this.target.nullable = oneToOneColumn.oneToOne.optional != null ? oneToOneColumn.oneToOne.optional : true;
@@ -51,7 +51,7 @@ class OneToOneAssociationParser {
                     parentModel: this.model.name,
                     parentField: tableAnnotation.joinTable.joinColumns[0].referencedColumnName,
                     associationObjectField: tableAnnotation.joinTable.joinColumns[0].name,
-                    childModel: column.type,
+                    childModel: typeof column.type === 'string' ? column.type : column.type.name,
                     childField: tableAnnotation.joinTable.inverseJoinColumns[0].referencedColumnName,
                     associationValueField: tableAnnotation.joinTable.inverseJoinColumns[0].name
                 }
@@ -106,7 +106,7 @@ class OneToManyAnnotationParser {
     constructor(public model: DataModelProperties, public target: DataFieldBase) {
         //
     }
-    parse(column: any) {
+    parse(column: ColumnAnnotation) {
         const oneToManyColumn = column as OneToManyColumnAnnotation;
         if (oneToManyColumn.oneToMany) {
             this.target.many = true;
@@ -120,7 +120,6 @@ class OneToManyAnnotationParser {
             }
             // set cascade
             if (oneToManyColumn.oneToMany.cascadeType != null) {
-                // eslint-disable-next-line no-bitwise
                 if ((oneToManyColumn.oneToMany.cascadeType & CascadeType.Remove) === CascadeType.Remove) {
                     this.target.mapping.cascade = 'delete';
                 } else if ((oneToManyColumn.oneToMany.cascadeType & CascadeType.Persist) === CascadeType.Persist) {
@@ -138,7 +137,7 @@ class ManyToManyAnnotationParser {
     constructor(public model: DataModelProperties, public target: DataFieldBase) {
         //
     }
-    parse(column: any) {
+    parse(column: ColumnAnnotation) {
         const manyToManyColumn = column as ManyToManyColumnAnnotation;
         if (manyToManyColumn.manyToMany) {
             this.target.many = true;
@@ -158,6 +157,7 @@ class ManyToManyAnnotationParser {
                     parentModel:this.model.name,
                 });
             } else if (manyToManyColumn.manyToMany.targetEntity) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 targetType = new ColumnAnnotationParser(this.model).getTypeString(manyToManyColumn.manyToMany.targetEntity);
                 Object.assign(this.target.mapping, {
                     parentModel: manyToManyColumn.manyToMany.targetEntity,
@@ -199,7 +199,7 @@ class ElementCollectionAnnotationParser {
     constructor(public model: DataModelProperties, public target: DataFieldBase) {
         //
     }
-    parse(column: any) {
+    parse(column: ColumnAnnotation) {
         const annotation = column as ElementCollectionColumnAnnotation;
         if (annotation.elementCollection) {
             this.target.many = true;
@@ -252,7 +252,7 @@ class ColumnAnnotationParser {
         //
     }
 
-    getTypeString(type: any) {
+    getTypeString(type: unknown) {
         let columnType: string;
         if (typeof type === 'string') {
             return type;
@@ -270,14 +270,14 @@ class ColumnAnnotationParser {
 
 class EntityLoaderStrategy extends SchemaLoaderStrategy {
 
-    public imports: any[] = [];
+    public imports: unknown[] = [];
     protected models: Map<string, DataModelProperties> = new Map();
 
     constructor(config: ConfigurationBase) {
         super(config);
     }
 
-    getModelDefinition(name: string): any {
+    getModelDefinition(name: string): DataModelProperties {
         const model = this.models.get(name);
         if (model == null) {
             return null;
@@ -301,9 +301,8 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
     }
 
     readSync(): string[] {
-        const models: Map<string, any> = new Map();
+        const models: Map<string, DataModelProperties> = new Map();
         for (const module of this.imports) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             Object.keys(module).forEach((member: string) => {
                 if (Object.prototype.hasOwnProperty.call(module, member)) {
                     const exportedMember = module[member];
@@ -327,6 +326,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
         return Array.from(this.models.keys());
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getModelFromEntityClass(entityClass: any): DataModelProperties {
         if (Object.prototype.hasOwnProperty.call(entityClass, 'Entity') === false) {
             return null;
@@ -436,6 +436,7 @@ class EntityLoaderStrategy extends SchemaLoaderStrategy {
                     // set validation
                     const columnValidation = column as ColumnValidationAnnotation;
                     if (columnValidation.validation) {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         field.validation = columnValidation.validation as any;
                     }
                     // set primary

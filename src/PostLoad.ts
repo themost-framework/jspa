@@ -8,9 +8,9 @@ function PostLoad() {
 
 declare interface PostLoadEvent {
     context?: DataContextBase,
-    entityClass?: EntityConstructor<any>;
-    emitter?: any;
-    query?: any;
+    entityClass?: EntityConstructor<unknown>;
+    emitter?: unknown;
+    query?: unknown;
 }
 
 export {
